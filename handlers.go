@@ -4,47 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"database/sql"
 	_ "github.com/lib/pq"
 	"log"
+	"web_server/models"
 )
-
-const (
-	host_name = "192.168.1.25"
-	host_port = 5432
-	username = "tech"
-	pwd = "F3rnand@21"
-	db_name= "docusys_dev"
-)
-
 
 func HandleRoot(w http.ResponseWriter, r *http.Request) {
+	cls, err := models.AllClient()
 
-	pg_conn := fmt.Sprintf("port=%d host=%s user=%s "+
-	"password=%s dbname=%s sslmode=disable", 
-	host_port, host_name, username, pwd, db_name)
-
-	db, err := sql.Open("postgres", pg_conn)
-	
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
 
-	defer db.Close()
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
+	for _, cl := range cls {
+		fmt.Fprintf(w, "%d %s %s %s %s\n", cl.ID, cl.First_name, cl.Last_name, cl.Ci, cl.Birthday)
 	}
 
-	var client Client
-	query := "SELECT id, first_name, last_name, ci, birthday FROM clients WHERE ci = $1"
-	err = db.QueryRow(query, "3796986").Scan(&client.ID, &client.First_name, &client.Last_name, &client.Ci, &client.Birthday)
-	if err != nil {
-		log.Fatal("Failed to exceute query: ", err)
-	}
-
-	fmt.Fprintf(w, "Hello Wolrd!: %s %s %s %s", client.First_name, client.Last_name, client.Ci, client.Birthday)
 }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
@@ -78,3 +55,33 @@ func UserPostRequest(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "applicacion/json")
 	w.Write(response)
 }
+
+
+// func HandleRoot(w http.ResponseWriter, r *http.Request) {
+
+// 	pg_conn := fmt.Sprintf("port=%d host=%s user=%s "+
+// 	"password=%s dbname=%s sslmode=disable", 
+// 	host_port, host_name, username, pwd, db_name)
+
+// 	db, err := sql.Open("postgres", pg_conn)
+	
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	defer db.Close()
+
+// 	err = db.Ping()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	var client Client
+// 	query := "SELECT id, first_name, last_name, ci, birthday FROM clients WHERE ci = $1"
+// 	err = db.QueryRow(query, "3796986").Scan(&client.ID, &client.First_name, &client.Last_name, &client.Ci, &client.Birthday)
+// 	if err != nil {
+// 		log.Fatal("Failed to exceute query: ", err)
+// 	}
+
+// 	fmt.Fprintf(w, "Hello Wolrd!: %s %s %s %s", client.First_name, client.Last_name, client.Ci, client.Birthday)
+// }
