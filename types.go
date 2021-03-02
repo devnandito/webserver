@@ -24,6 +24,13 @@ type Client struct {
 	Birthday time.Time
 }
 
+type Table4 struct {
+	PK int
+	Email string
+	Fullname string
+}
+
+
 func (u *User) ToJson() ([]byte, error) {
 	return json.Marshal(u)
 }

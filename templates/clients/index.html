@@ -1,0 +1,15 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Results</title> 
+</head> 
+<body> 
+{{ range .}}
+  <p>{{.ID}} - {{.First_name}} {{.Last_name}} {{.Ci}} {{.Birthday}}</p>
+{{end}}
+
+{{range $index, $elment := .}}
+  <p>{{$index}} - {{$elment}}</p>
+{{end}}
+</body> 
+</html> 
