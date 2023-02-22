@@ -41,3 +41,8 @@ func (s *Server) Listen() error {
 	}
 	return nil
 }
+
+func (s *Server) File(dir string) {
+	style := http.FileServer(http.Dir(dir))
+	http.Handle("/assets/", http.StripPrefix("/assets/", style))
+}

@@ -1,12 +1,9 @@
 package lib
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -23,10 +20,10 @@ type Config struct {
 
 // GetEnv load env
 func GetEnv() (conf *Config) {
-	err := godotenv.Load("lib/.env")
-	if err != nil {
-	 	log.Fatal("Error loading .env file")
-	}
+	// err := godotenv.Load("lib/.env")
+	// if err != nil {
+	//  	log.Fatal("Error loading .env file")
+	// }
 
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
@@ -57,14 +54,14 @@ func NewConfig() *Config {
 }
 
 // DsnString postgresql driver
-func (c *Config) DsnString() (conn *sql.DB) {
-	dsn := fmt.Sprintf("host=%s dbname=%s sslmode=disable user=%s password=%s port=%s", c.Host, c.Name, c.User, c.Password, c.Port)
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		panic(err)
-	}
-	return db
-}
+// func (c *Config) DsnString() (conn *sql.DB) {
+// 	dsn := fmt.Sprintf("host=%s dbname=%s sslmode=disable user=%s password=%s port=%s", c.Host, c.Name, c.User, c.Password, c.Port)
+// 	db, err := sql.Open("postgres", dsn)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	return db
+// }
 
 // DsnStringGorm postgresql driver
 func (c *Config) DsnStringGorm() (conn *gorm.DB) {

@@ -38,8 +38,14 @@ func (c Client) BirthdayTime(timeStr string) (timeT time.Time) {
 	return t
 }
 
-func (c *Client) ToJson() ([]byte, error) {
-	return json.Marshal(c)
+// ToJson return to r.body to json
+func (c *Client) ToJson(cls Client) ([]byte, error) {
+	return json.Marshal(cls)
+}
+
+// ToText return r.body to text
+func (c *Client) ToText(data []byte, v interface{}) error {
+	return json.Unmarshal(data, v)
 }
 
 // FormClient form access public
@@ -48,7 +54,6 @@ type FormClient struct {
 	FirstName string
 	LastName string
 }
-
 
 // GetClientGorm show all client
 func (c Client) GetClientGorm(fcls *FormClient) ([]Client, error) {
@@ -149,8 +154,8 @@ func (c Client) CreateClientGorm(cls *Client) (Client, error) {
 	return data, response.Error
 }
 
-// EditClientGorm edit client
-func (c Client) EditClientGorm(id int64) (Client, error) {
+// GetClientGorm get one client
+func (c Client) GetOneClientGorm(id int64) (Client, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
 	response := db.Find(&c, id)
@@ -166,12 +171,11 @@ func (c Client) SaveEditClientGorm(id int, cls *Client) (Client, error) {
 }
 
 // DeleteClientGorm delete client
-func (c Client) DeleteClientGorm(id int) (Client, error) {
+func (c Client) DeleteClientGorm(id int) error {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
-	var client Client
-	response := db.Delete(&client, id)
-	return client, response.Error
+	response := db.Delete(&c, id)
+	return response.Error
 }
 
 // ShowClientGorm show client

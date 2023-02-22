@@ -5,7 +5,7 @@
     <h1>{{index . "Title"}}</h1>
     <ol class="breadcrumb">
       <li>
-        <a href="#"><i class="fa fa-dashboard"></i> Home</a>
+        <a href="/clients/show"><i class="fa fa-dashboard"></i> Home</a>
       </li>
       <li class="active">Show clients</li>
     </ol>
@@ -39,27 +39,25 @@
         <table class="table table-bordered table-striped dt-responsive tablas">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>FirstName</th>
-              <th>LastName</th>
-              <th>Ci</th>
-              <th>Birthday</th>
-              <th>Sex</th>
-              <th>Action</th>
+              {{ range .Headers }}
+                <th>{{.}}</th>
+              {{ end}}
             </tr>
           </thead>
           <tbody>
-            {{ range index . "clients"}}
+            {{ range .Clients}}
             <tr>
               <td>{{.ID}}</td>
               <td>{{.FirstName}}</td>
               <td>{{.LastName}}</td>
               <td>{{.Ci}}</td>
-              <td>{{.Birthday}}</td>
+              <td>{{.BirthdayDateStr}}</td>
               <td>{{.Sex}}</td>
               <td>
-                <a href="/clients/edit/{{.ID}}">Edit</a> -
-                <a href="/clients/delete/{{.ID}}">Delete</a>
+                <div class="btn-groups">
+                  <a href="/clients/edit?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/clients/detail?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                </div>
               </td>
             </tr>
             {{end}}

@@ -8,14 +8,25 @@ import (
 )
 
 func main() {
-	server := server.NewServer(":9000")
+	http := server.NewServer(":9000")
 	// API
-	server.Handle("POST", "/api/clients", server.AddMiddleware(handlers.HandlePostRequest, middleware.CheckAuth(), middleware.Logging()))
-	server.Handle("GET", "/api/clients", api.HandleApiClientGet)
-	server.Handle("POST", "/api/users", handlers.HandleUserPostRequest)
+	http.Handle("GET", "/api/clients", api.HandleApiClients)
+	http.Handle("POST", "/api/clients", api.HandleApiCreateClient)
+	http.Handle("GET", "/api/clients/:id", api.HandleApiPutClient)
+	http.Handle("POST", "/api/users", handlers.HandleUserPostRequest)
+	http.Handle("POST", "/api/v1/users", http.AddMiddleware(handlers.HandlePostRequest, middleware.CheckAuth(), middleware.Logging()))
+
 	// TEMPLATE
-	server.Handle("GET", "/", handlers.HandleHome)
-	server.Handle("GET", "/clients/show", handlers.HandleShowClient)
-	server.Handle("GET", "/root", handlers.HandleRoot)
-	server.Listen()
+	http.File("assets")
+	http.Handle("GET", "/", handlers.HandleHome)
+	http.Handle("GET", "/clients/show", handlers.HandleShowClient)
+	// http.Handle("GET", "/clients/show", http.AddMiddleware(handlers.HandleShowClient, middleware.CheckAuth()))
+	http.Handle("GET", "/clients/create", handlers.HandleCreateClient)
+	http.Handle("POST", "/clients/create", handlers.HandleCreateClient)
+	http.Handle("GET", "/clients/edit", handlers.HandleUpdateClient)
+	http.Handle("POST", "/clients/edit", handlers.HandleUpdateClient)
+	http.Handle("GET", "/clients/detail", handlers.HandleGetClient)
+	http.Handle("GET", "/clients/delete", handlers.HandleDeleteClient)
+	http.Listen()
+	// http.Handle("GET", "/root", handlers.HandleRoot)
 }
