@@ -23,8 +23,15 @@ type User struct {
 	Role Role
 }
 
-func (u *User) ToJson() ([]byte, error) {
-	return json.Marshal(u)
+// ToJson return to r.body to json
+// ToJson return to r.body to json
+func (u *User) ToJson(usr User) ([]byte, error) {
+	return json.Marshal(usr)
+}
+
+// ToText return r.body to text
+func (u *User) ToText(data []byte, v interface{}) error {
+	return json.Unmarshal(data, v)
 }
 
 // ShowUserGorm show user
@@ -50,6 +57,7 @@ func (u User) ShowUserGorm() ([]User, error) {
 func (u User) CreateUserGorm(data *User) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
+	db.AutoMigrate(&User{})
 	response := db.Create(&data)
 	user := User {
 		Username: u.Username,

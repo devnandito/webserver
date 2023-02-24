@@ -67,7 +67,7 @@ func HandleApiCreateClient(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(response)
 
-	w.Header().Set("Content-type", "applicacion/json")
+	w.Header().Set("Content-type", "application/json")
 	w.Write(jsonData)
 }
 

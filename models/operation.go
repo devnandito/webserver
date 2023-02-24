@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"github.com/devnandito/webserver/lib"
 	"gorm.io/gorm"
 )
@@ -11,6 +12,16 @@ type Operation struct {
 	Description string `json:"description"`
 	ModuleID int `json:"moduleid"`
 	Module Module
+}
+
+// ToJson return to r.body to json
+func (o Operation) ToJson(op Operation) ([]byte, error) {
+	return json.Marshal(op)
+}
+
+// ToText return r.body to text
+func (o *Operation) ToText(data []byte, v interface{}) error {
+	return json.Unmarshal(data, v)
 }
 
 // ShowOperationGorm show user
@@ -30,4 +41,18 @@ func (o Operation) ShowOperationGorm() ([]Operation, error) {
 		response = append(response, item)
 	}
 	return response, err
+}
+
+// CreateOperationGorm created a new operation
+func (o Operation) CreateOperationGorm(op *Operation) (Operation, error){
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	db.AutoMigrate(&Operation{})
+	response := db.Create(&op)
+	data := Operation {
+		Description: op.Description,
+		ModuleID: op.ModuleID,
+	}
+	
+	return data, response.Error
 }

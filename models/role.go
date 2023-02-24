@@ -1,19 +1,33 @@
 package models
 
 import (
-	"time"
+	"encoding/json"
+	_ "time"
 
 	"github.com/devnandito/webserver/lib"
+	
+	"gorm.io/gorm"
 )
 
 // Role access public
 type Role struct {
-	ID uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt time.Time
+	// ID uint `gorm:"primaryKey"`
+	// CreatedAt time.Time
+	// UpdatedAt time.Time
+	// DeletedAt time.Time
+	gorm.Model
 	Description string `json:"description"`
 	Operation []Operation `gorm:"many2many:role_operations;"`
+}
+
+// ToJson return to r.body to json
+func (r *Role) ToJson(rl Role) ([]byte, error) {
+	return json.Marshal(rl)
+}
+
+// ToText return r.body to text
+func (r *Role) ToText(data []byte, v interface{}) error {
+	return json.Unmarshal(data, v)
 }
 
 // ShowRoleGorm show role
@@ -39,9 +53,9 @@ func (r Role) ShowRoleGorm() ([]Role, error) {
 func (r Role) CreateRoleGorm(data *Role) (Role, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
+	db.AutoMigrate(&Role{})
 	response := db.Create(&data)
 	role := Role {
-		ID: r.ID,
 		Description: r.Description,
 	}
 	return role, response.Error

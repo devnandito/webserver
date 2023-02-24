@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+
 // Client client access public
 type Client struct {
 	gorm.Model
@@ -143,6 +144,7 @@ func (c Client) ApiGetClientGorm(ci string) ([]Client, error) {
 func (c Client) CreateClientGorm(cls *Client) (Client, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
+	db.AutoMigrate(&Client{})
 	response := db.Create(&cls)
 	data := Client{
 		FirstName: cls.FirstName,

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"time"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,11 +11,78 @@ import (
 
 	"github.com/devnandito/webserver/models"
 	"github.com/devnandito/webserver/utils"
+	"github.com/google/uuid"
 )
 
 var cls models.Client
 var user models.User
 var metadata models.MetaData
+
+
+var users = map[string]string{
+	"user1": "password1",
+	"user2": "password2",
+}
+
+var session = map[string]Session{}
+
+type Session struct {
+	Username string
+	Expiry time.Time
+}
+
+func (s Session) isExpired() bool {
+	return s.Expiry.Before(time.Now())
+}
+
+type Credentials struct {
+	Password string `json:"password"`
+	Username string `json:"username"`
+}
+
+func Signin(w http.ResponseWriter, r *http.Request) {
+	var creds Credentials
+
+	// Get the JSON body and decode into credentials
+	err := json.NewDecoder(r.Body).Decode(&creds)
+	
+	if err != nil {
+
+		w.WriteHeader(http.StatusBadRequest)
+		return
+
+	}
+
+	// Get the expected password form our in memory map
+	expectedPassword, ok := users[creds.Username]
+
+	// If a password exists for the given user
+	// AND, if it is the same as the password we received, the we can move ahead
+	// if NOT, the we return an "Unauthorized"
+	if !ok || expectedPassword != creds.Password {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// Create a new random session token
+	// we use the "github.com/google/uuid" library to generate UUIDs
+	sessionToken := uuid.NewString()
+	expiresAt := time.Now().Add(120 * time.Second)
+
+	// Set the token in the session map, along with the session information
+	session[sessionToken] = Session {
+		Username: creds.Username,
+		Expiry: expiresAt,
+	}
+
+	// Finally, we set the client cookie for "session_token" as the session token we just generated
+	// we also set an expiry time of 120 seconds
+	http.SetCookie(w, &http.Cookie {
+		Name: "session_token",
+		Value: sessionToken,
+		Expires: expiresAt,
+	})
+}
 
 func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 	title := "List client"

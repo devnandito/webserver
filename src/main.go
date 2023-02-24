@@ -8,13 +8,30 @@ import (
 )
 
 func main() {
-	http := server.NewServer(":9000")
-	// API
+	http := server.NewServer(":8080")
+	// API clients
 	http.Handle("GET", "/api/clients", api.HandleApiClients)
 	http.Handle("POST", "/api/clients", api.HandleApiCreateClient)
 	http.Handle("GET", "/api/clients/:id", api.HandleApiPutClient)
 	http.Handle("POST", "/api/users", handlers.HandleUserPostRequest)
 	http.Handle("POST", "/api/v1/users", http.AddMiddleware(handlers.HandlePostRequest, middleware.CheckAuth(), middleware.Logging()))
+	
+	// API module
+	http.Handle("GET", "/api/modules", api.HandleApiModules)
+	http.Handle("POST", "/api/modules", api.HandleApiCreateModule)
+
+	// API operation
+	http.Handle("GET", "/api/operations", api.HandleApiOperations)
+	http.Handle("POST", "/api/operations", api.HandleApiCreateOperation)
+
+	// API role
+	http.Handle("GET", "/api/roles", api.HandleApiRole)
+	http.Handle("POST", "/api/roles", api.HandleApiCreateRole)
+
+	// API user
+	http.Handle("GET", "/api/users", api.HandleApiUser)
+	http.Handle("POST", "/api/users", api.HandleApiCreateUser)
+
 
 	// TEMPLATE
 	http.File("assets")
