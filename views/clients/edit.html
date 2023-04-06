@@ -1,4 +1,6 @@
-{{template "base.html" index . "Title"}}
+{{ template "header" . }}
+{{ template "nav" . }}
+{{ template "menu" . }}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -101,3 +103,5 @@
     </div>
   </section>
 </div>
+{{ template "javascript" . }}
+{{ template "header" . }}

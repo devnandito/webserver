@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/devnandito/webserver/lib"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +24,11 @@ type User struct {
 	Role Role
 }
 
-// ToJson return to r.body to json
+func (u User) GetPwdHash(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 0)
+ 	return string(hash), err
+}
+
 // ToJson return to r.body to json
 func (u *User) ToJson(usr User) ([]byte, error) {
 	return json.Marshal(usr)
@@ -90,3 +95,71 @@ func (u User) SearchUserID(data string) (User, error) {
 	response := db.Where("id = ?", data).Find(&u)
 	return u, response.Error
 }
+
+func (u User) VerifyUser(email string) (User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Where("email = ?", email).Find(&u)
+	return u, response.Error
+}
+
+// type AuthUser struct {
+// 	Email string
+// 	PasswordHash string
+// }
+
+// var authUserDB = map[string]AuthUser{}
+
+// type UserService struct {
+// }
+
+// func (UserService) VerifyUser(user User) bool {
+// 	authUser, ok := authUserDB[user.Email]
+// 	if !ok {
+// 		return false
+// 	}
+	
+// 	err := bcrypt.CompareHashAndPassword(
+// 		[]byte(authUser.PasswordHash),
+// 		[]byte(user.Password))
+// 		return err == nil
+// }
+
+
+// func (u User) VerifyUser(data *User) (bool, error) {
+// 	conn := lib.NewConfig()
+// 	db := conn.DsnStringGorm()
+// 	response := db.Where("email = ?", data.Email).Find(&u)
+
+// 	return true, response.Error
+
+// 	// err := bcrypt.CompareHashAndPassword(
+// 	// 	[]byte(data.Password),
+// 	// 	[]byte(u.Password))
+	
+// }
+
+// func (UserService) CreateUser(newUser User) error {
+// 	_, ok := authUserDB[newUser.Email]
+// 	if !ok {
+// 		return errors.New("User already exists")
+// 	}
+
+// 	passwordHash, err := GetPasswordHash(newUser.Password)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	newAuthUser := AuthUser {
+// 		Email: newUser.Email,
+// 		PasswordHash: passwordHash,
+// 	}
+
+// 	authUserDB[newAuthUser.Email] = newAuthUser
+// 	return nil
+// }
+
+// func GetPasswordHash(password string) (string, error) {
+// 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 0)
+// 	return string(hash), err
+// }

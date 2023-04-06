@@ -1,5 +1,9 @@
-{{template "base.html" index . "Title"}}
+{{ template "header" . }}
+{{ template "nav" . }}
+{{ template "menu" . }}
 
+{{ $clients := .Menu.clients }}
+{{ $users := .Menu.users }}
 <div class="content-wrapper">
   <section class="content-header">
     <h1>{{index . "Title"}}</h1>
@@ -55,8 +59,8 @@
               <td>{{.Sex}}</td>
               <td>
                 <div class="btn-groups">
-                  <a href="/clients/edit?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                  <a href="/clients/detail?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                  <a href="/{{index $clients 0}}/{{index $clients 3}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{index $clients 0}}/{{index $clients 4}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
                 </div>
               </td>
             </tr>
@@ -66,4 +70,6 @@
       </div>
     </div>
   </section>
-</div>
+ </div>
+{{ template "javascript" . }}
+{{ template "header" . }}

@@ -1,0 +1,99 @@
+{{ define "menu" }}
+
+{{ $clients := .Menu.clients }}
+{{ $users := .Menu.users }}
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <ul class="sidebar-menu">
+      <li class="active">
+        <a href="/dashboard">
+          <i class="fa fa-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <!-- if request.user.profile.level.id == 1 -->
+      <li class="treeview">
+        <a href="">
+          <i class="fa fa-list-ul"></i>
+          <span>Cuentas</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li>
+            <a href="/{{index $users 0}}/{{index $users 1}}">
+              <i class="fa fa-circle-o"></i>
+              <span>Users</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-circle-o"></i>
+              <span>Profiles</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-circle-o"></i>
+              <span>Levels</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!--  endif
+        if request.user.profile.level.id == 1 or  request.user.profile.level.id == 6 -->
+      <li>
+        <a href="">
+          <i class="fa fa-th"></i>
+          <span>Category</span>
+        </a>
+      </li>
+      <li>
+        <a href="">
+          <i class="fa fa-product-hunt"></i>
+          <span>Products</span>
+        </a>
+      </li>
+      <!-- endif
+        if request.user.profile.level.id == 1 or  request.user.profile.level.id == 2 -->
+      <li>
+        <a href="/{{index $clients 0}}/{{index $clients 1}}">
+          <i class="fa fa-users"></i>
+          <span>Clients</span>
+        </a>
+      </li>
+      <li class="treeview">
+        <a href="">
+          <i class="fa fa-list-ul"></i>
+          <span>Sales</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li>
+            <a href="">
+              <i class="fa fa-circle-o"></i>
+              <span>Manage sale</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-circle-o"></i>
+              <span>Add sale</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <i class="fa fa-circle-o"></i>
+              <span>Report sale</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- endif -->
+    </ul>
+  </section>
+</aside>
+{{ end}}

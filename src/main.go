@@ -35,15 +35,23 @@ func main() {
 
 	// TEMPLATE
 	http.File("assets")
-	http.Handle("GET", "/", handlers.HandleHome)
-	http.Handle("GET", "/clients/show", handlers.HandleShowClient)
-	// http.Handle("GET", "/clients/show", http.AddMiddleware(handlers.HandleShowClient, middleware.CheckAuth()))
-	http.Handle("GET", "/clients/create", handlers.HandleCreateClient)
-	http.Handle("POST", "/clients/create", handlers.HandleCreateClient)
-	http.Handle("GET", "/clients/edit", handlers.HandleUpdateClient)
-	http.Handle("POST", "/clients/edit", handlers.HandleUpdateClient)
-	http.Handle("GET", "/clients/detail", handlers.HandleGetClient)
-	http.Handle("GET", "/clients/delete", handlers.HandleDeleteClient)
+	// Register
+	http.Handle("GET", "/register", handlers.SignUpUser)
+	http.Handle("POST", "/register", handlers.SignUpUser)
+
+	// Users
+	http.Handle("GET", "/", handlers.SignInUser)
+	http.Handle("POST", "/login", handlers.SignInUser)
+	http.Handle("GET", "/logout", handlers.Logout)
+	http.Handle("GET", "/users/show", http.AddMiddleware(handlers.HandelShowUser, middleware.CheckAuth()))
+
+	// Clients
+	http.Handle("GET", "/clients/show", http.AddMiddleware(handlers.HandleShowClient, middleware.CheckAuth()))
+	http.Handle("GET", "/clients/create", http.AddMiddleware(handlers.HandleCreateClient, middleware.CheckAuth()))
+	http.Handle("POST", "/clients/create", http.AddMiddleware(handlers.HandleCreateClient, middleware.CheckAuth()))
+	http.Handle("GET", "/clients/edit", http.AddMiddleware(handlers.HandleUpdateClient, middleware.CheckAuth()))
+	http.Handle("POST", "/clients/edit", http.AddMiddleware(handlers.HandleUpdateClient, middleware.CheckAuth()))
+	http.Handle("GET", "/clients/detail", http.AddMiddleware(handlers.HandleGetClient, middleware.CheckAuth()))
+	http.Handle("GET", "/clients/delete", http.AddMiddleware(handlers.HandleDeleteClient, middleware.CheckAuth()))
 	http.Listen()
-	// http.Handle("GET", "/root", handlers.HandleRoot)
 }

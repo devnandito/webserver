@@ -7,8 +7,12 @@ type Link struct {
 	Action map[string]string
 }
 
-func GetUrl(url string) *Link {
+type Menu struct {
+	Url string
+	Action map[int]string
+}
 
+func GetUrl(url string) *Link {
 	m := make(map[string]string)
 	m["show"] = "show"
 	m["create"] = "create"
@@ -23,6 +27,13 @@ func GetUrl(url string) *Link {
 	}
 
 	return data
+}
+
+func GetMenu() map[string][]string {
+	clients := []string{"clients", "show", "create", "edit", "detail", "delete"}
+	users := []string{"users", "show", "create", "edit", "detail", "delete"}
+	m := map[string][]string{"clients": clients, "users": users}
+	return m
 }
 
 func BirthdayTime(timeStr string) (timeT time.Time) {

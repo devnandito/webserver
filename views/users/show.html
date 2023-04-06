@@ -1,0 +1,74 @@
+{{ template "header" . }}
+{{ template "nav" . }}
+{{ template "menu" . }}
+
+{{ $clients := .Menu.clients }}
+{{ $users := .Menu.users }}
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1>{{index . "Title"}}</h1>
+    <ol class="breadcrumb">
+      <li>
+        <a href="/clients/show"><i class="fa fa-dashboard"></i> Home</a>
+      </li>
+      <li class="active">Show clients</li>
+    </ol>
+  </section>
+  <section class="content">
+    <div class="box">
+      <div class="box-header with-border">
+        <a href="/clients/create" class="btn btn-primary"> Add clients </a>
+        <div class="box-tools pull-right">
+          <button
+            type="button"
+            class="btn btn-box-tool"
+            data-widget="collapse"
+            data-toggle="tooltip"
+            title="Collapse"
+          >
+            <i class="fa fa-minus"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-box-tool"
+            data-widget="remove"
+            data-toggle="tooltip"
+            title="Remove"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="box-body">
+        <table class="table table-bordered table-striped dt-responsive tablas">
+          <thead>
+            <tr>
+              {{ range .Headers }}
+                <th>{{.}}</th>
+              {{ end}}
+            </tr>
+          </thead>
+          <tbody>
+            {{ range .Users}}
+            <tr>
+              <td>{{.ID}}</td>
+              <td>{{.Username}}</td>
+              <td>{{.Email}}</td>
+              <td>{{.Name}}</td>
+              <td>
+                <div class="btn-groups">
+                  <a href="/{{index $users 0}}/{{index $users 3}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{index $users 0}}/{{index $users 4}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                </div>
+              </td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+{{ template "javascript" . }}
+{{ template "header" . }}

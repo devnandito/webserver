@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"time"
-	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -11,84 +9,24 @@ import (
 
 	"github.com/devnandito/webserver/models"
 	"github.com/devnandito/webserver/utils"
-	"github.com/google/uuid"
 )
 
 var cls models.Client
 var user models.User
 var metadata models.MetaData
 
-
-var users = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
-}
-
-var session = map[string]Session{}
-
-type Session struct {
-	Username string
-	Expiry time.Time
-}
-
-func (s Session) isExpired() bool {
-	return s.Expiry.Before(time.Now())
-}
-
-type Credentials struct {
-	Password string `json:"password"`
-	Username string `json:"username"`
-}
-
-func Signin(w http.ResponseWriter, r *http.Request) {
-	var creds Credentials
-
-	// Get the JSON body and decode into credentials
-	err := json.NewDecoder(r.Body).Decode(&creds)
-	
-	if err != nil {
-
-		w.WriteHeader(http.StatusBadRequest)
-		return
-
-	}
-
-	// Get the expected password form our in memory map
-	expectedPassword, ok := users[creds.Username]
-
-	// If a password exists for the given user
-	// AND, if it is the same as the password we received, the we can move ahead
-	// if NOT, the we return an "Unauthorized"
-	if !ok || expectedPassword != creds.Password {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	// Create a new random session token
-	// we use the "github.com/google/uuid" library to generate UUIDs
-	sessionToken := uuid.NewString()
-	expiresAt := time.Now().Add(120 * time.Second)
-
-	// Set the token in the session map, along with the session information
-	session[sessionToken] = Session {
-		Username: creds.Username,
-		Expiry: expiresAt,
-	}
-
-	// Finally, we set the client cookie for "session_token" as the session token we just generated
-	// we also set an expiry time of 120 seconds
-	http.SetCookie(w, &http.Cookie {
-		Name: "session_token",
-		Value: sessionToken,
-		Expires: expiresAt,
-	})
-}
-
 func HandleShowClient(w http.ResponseWriter, r *http.Request) {
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
 	title := "List client"
+	m := utils.GetMenu()
 	headers := [7]string{"ID", "Firstname", "Lastname", "CI", "Birthday", "Sex", "Action"}
-	tb := filepath.Join("views", "base.html")
-	tp := filepath.Join("views/clients", "show.html")
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	show := filepath.Join("views/clients", "show.html")
 	response, err := cls.ShowClientGorm()
 
 	if err != nil {
@@ -97,11 +35,13 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, _ := template.ParseFiles(tp, tb)
+	tmpl, _ := template.ParseFiles(show, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string]interface{}{
 		"Title": title,
 		"Clients": response,
 		"Headers": headers,
+		"User": userSession,
+		"Menu": m,
 	})
 
 	if res != nil {
@@ -111,19 +51,28 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	m := utils.GetMenu()
 	title := "Add client"
-	tb := filepath.Join("views", "base.html")
-	tp := filepath.Join("views/clients", "add.html")
-	tm := filepath.Join("views/messages", "message.html")
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	add := filepath.Join("views/clients", "add.html")
+	ms := filepath.Join("views/messages", "message.html")
 	url := utils.GetUrl("clients")
 	link := "/"+url.Url+"/"+url.Action["create"]
 
 	switch r.Method {
 	case "GET":
-		tmpl, _ := template.ParseFiles(tp, tb)
+		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"Link": link,
+			"User": userSession,
+			"Menu": m,
 		})
 	
 		if res != nil {
@@ -141,11 +90,13 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 		}
 		
 		if !msg.Validate() {
-			tmpl, _ := template.ParseFiles(tp, tb)
+			tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
 				"Link": link,
+				"User": userSession,
+				"Menu": m,
 			})
 
 			if res != nil {
@@ -171,12 +122,14 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 	
 			log.Println("Data inserted", response)
 			message := "Insertado correctamente"
-			tmpl, _ := template.ParseFiles(tm, tb)
+			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
 			linkmsg := "/"+url.Url+"/"+url.Action["show"]
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
+				"User": userSession,
+				"Menu": m,
 			})
 
 			if res != nil {
@@ -188,16 +141,23 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
 	title := "Edit client"
-	tb := filepath.Join("views", "base.html")
-	tp := filepath.Join("views/clients", "edit.html")
-	tm := filepath.Join("views/messages", "message.html")
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	edit := filepath.Join("views/clients", "edit.html")
+	ms := filepath.Join("views/messages", "message.html")
 	url := utils.GetUrl("clients")
 	link := "/"+url.Url+"/"+url.Action["edit"]
 	
 	switch r.Method {
 	case "GET":
-		tmpl, _ := template.ParseFiles(tp, tb)
+		tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
 		sid := r.URL.Query().Get("id")
 		id, err :=  strconv.ParseInt(sid, 10, 64)
 
@@ -222,6 +182,8 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"Link": link,
 			"ID": id,
+			"User": userSession,
+			"Menu": m,
 		})
 	
 		if res != nil {
@@ -247,12 +209,14 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 		}
 
 		if !msg.Validate() {
-			tmpl, _ := template.ParseFiles(tp, tb)
+			tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
 				"Link": link,
 				"ID": id,
+				"User": userSession,
+				"Menu": m,
 			})
 
 			if res != nil {
@@ -278,12 +242,14 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 	
 			log.Println("Data updated", response)
 			message := "Actualizado correctamente"
-			tmpl, _ := template.ParseFiles(tm, tb)
+			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
 			linkmsg := "/"+url.Url+"/"+url.Action["show"]
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
+				"User": userSession,
+				"Menu": m,
 			})
 
 			if res != nil {
@@ -295,9 +261,16 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 }
 
 func HandleGetClient(w http.ResponseWriter, r *http.Request){
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
 	title := "Delete client"
-	tb := filepath.Join("views", "base.html")
-	tp := filepath.Join("views/clients", "delete.html")
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	delete := filepath.Join("views/clients", "delete.html")
 	sid := r.URL.Query().Get("id")
 	url := utils.GetUrl("clients")
 	link := "/"+url.Url+"/"+url.Action["delete"]+"?id="+sid
@@ -310,11 +283,13 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 		panic(err)
 	}
 
-	tmpl, _ := template.ParseFiles(tp, tb)
+	tmpl, _ := template.ParseFiles(delete, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string] interface{}{
 		"Title": title,
 		"Client": response,
 		"Link": link,
+		"User": userSession,
+		"Menu": m,
 	})
 
 	if res != nil {

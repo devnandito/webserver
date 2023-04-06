@@ -1,17 +1,13 @@
-{{ template "header" . }}
-{{ template "nav" . }}
-{{ template "menu" . }}
+{{template "base.html" index . "Title"}}
 
 <div class="content-wrapper">
   <section class="content-header">
-    <h1>
-      {{.Title}}
-    </h1>
+    <h1>{{index . "Title"}}</h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/clients/show"><i class="fa fa-dashboard"></i> Show client</a>
+        <a href="/clients/show"><i class="fa fa-dashboard"></i> Home</a>
       </li>
-      <li class="active">{{.Title}}</li>
+      <li class="active">Show clients</li>
     </ol>
   </section>
   <section class="content">
@@ -39,15 +35,8 @@
         </div>
       </div>
       <div class="box-body">
-        <div class="card text-center">
-          <div class="card-body">
-            <h3 class="card-title">{{ .Msg }}</h3>
-            <a href="{{.Link}}" class="btn btn-success"><i class="fa fa-check-circle-o fa-5x"></i></a>
-          </div>
-        </div>
+        <p>Dashboard</p>
       </div>
     </div>
   </section>
 </div>
-{{ template "javascript" . }}
-{{ template "header" . }}
