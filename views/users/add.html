@@ -7,7 +7,6 @@
 {{ $operations := .Menu.operations }}
 {{ $roles := .Menu.roles }}
 
-
 <div class="content-wrapper">
   <section class="content-header">
     <h1>
@@ -15,7 +14,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{index $clients 0}}/{{index $clients 1}}"><i class="fa fa-dashboard"></i> Show clients</a>
+        <a href="/{{index $users 0}}/{{index $users 1}}"><i class="fa fa-dashboard"></i> Show users</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -50,45 +49,45 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="document" value="{{.Msg.Ci}}">
+                <input class="form-control" type="text" name="username" value="{{.Msg.Username}}" placeholder="Username">
               </div>
-              {{ with .Msg.Errors.Ci }}
+              {{ with .Msg.Errors.Username }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="firstname" value="{{.Msg.Firstname}}">
+                <input class="form-control" type="text" name="email" value="{{.Msg.Email}}" placeholder="Email">
               </div>
-              {{ with .Msg.Errors.Firstname }}
+              {{ with .Msg.Errors.Email }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="lastname" value="{{.Msg.Lastname}}">
+                <input class="form-control" type="text" name="fullname" value="{{.Msg.Fullname}}" placeholder="Full name">
               </div>
-              {{ with .Msg.Errors.Lastname }}
+              {{ with .Msg.Errors.Fullname }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="sex" value="{{.Msg.Sex}}">
+                <input class="form-control" type="password" name="password" value="{{.Msg.Password}}" placeholder="Password">
               </div>
-              {{ with .Msg.Errors.Sex }}
+              {{ with .Msg.Errors.Password }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="birthday" value="{{.Msg.BirthdayDateStr}}">
+                <input class="form-control" type="text" name="role" value="{{.Msg.RoleID}}" placeholder="Role">
               </div>
-              {{ with .Msg.Errors.BirthdayDateStr }}
+              {{ with .Msg.Errors.RoleID }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>

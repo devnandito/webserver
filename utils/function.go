@@ -32,7 +32,10 @@ func GetUrl(url string) *Link {
 func GetMenu() map[string][]string {
 	clients := []string{"clients", "show", "create", "edit", "detail", "delete"}
 	users := []string{"users", "show", "create", "edit", "detail", "delete"}
-	m := map[string][]string{"clients": clients, "users": users}
+	modules := []string{"modules", "show", "create", "edit", "detail", "delete"}
+	operations := []string{"operations", "show", "create", "edit", "detail", "delete"}
+	roles := []string{"roles", "show", "create", "edit", "detail", "delete"}
+	m := map[string][]string{"clients": clients, "users": users, "modules": modules, "operations": operations, "roles": roles}
 	return m
 }
 

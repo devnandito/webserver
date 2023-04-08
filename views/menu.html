@@ -2,6 +2,10 @@
 
 {{ $clients := .Menu.clients }}
 {{ $users := .Menu.users }}
+{{ $modules := .Menu.modules }}
+{{ $operations := .Menu.operations }}
+{{ $roles := .Menu.roles }}
+
 <aside class="main-sidebar">
   <section class="sidebar">
     <ul class="sidebar-menu">
@@ -28,15 +32,21 @@
             </a>
           </li>
           <li>
-            <a href="">
+            <a href="/{{index $operations 0}}/{{index $operations 1}}">
               <i class="fa fa-circle-o"></i>
-              <span>Profiles</span>
+              <span>Operations</span>
             </a>
           </li>
           <li>
-            <a href="">
+            <a href="/{{index $roles 0}}/{{index $roles 1}}">
               <i class="fa fa-circle-o"></i>
-              <span>Levels</span>
+              <span>Roles</span>
+            </a>
+          </li>
+          <li>
+            <a href="/{{index $modules 0}}/{{index $modules 1}}">
+              <i class="fa fa-circle-o"></i>
+              <span>Modules</span>
             </a>
           </li>
         </ul>

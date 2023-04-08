@@ -38,9 +38,9 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 	tmpl, _ := template.ParseFiles(show, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string]interface{}{
 		"Title": title,
-		"Clients": response,
+		"Objects": response,
 		"Headers": headers,
-		"User": userSession,
+		"UserSession": userSession,
 		"Menu": m,
 	})
 
@@ -71,7 +71,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"Link": link,
-			"User": userSession,
+			"UserSession": userSession,
 			"Menu": m,
 		})
 	
@@ -95,7 +95,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": msg,
 				"Link": link,
-				"User": userSession,
+				"UserSession": userSession,
 				"Menu": m,
 			})
 
@@ -128,7 +128,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
-				"User": userSession,
+				"UserSession": userSession,
 				"Menu": m,
 			})
 
@@ -182,7 +182,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"Link": link,
 			"ID": id,
-			"User": userSession,
+			"UserSession": userSession,
 			"Menu": m,
 		})
 	
@@ -215,7 +215,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 				"Msg": msg,
 				"Link": link,
 				"ID": id,
-				"User": userSession,
+				"UserSession": userSession,
 				"Menu": m,
 			})
 
@@ -232,7 +232,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 				Birthday: tBirthday,
 			}
 			
-			response, err := cls.SaveEditClientGorm(id, &data)
+			response, err := cls.UpdateClientGorm(id, &data)
 	
 			if err != nil {
 				log.Println(err)
@@ -248,7 +248,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
-				"User": userSession,
+				"UserSession": userSession,
 				"Menu": m,
 			})
 
@@ -288,7 +288,7 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 		"Title": title,
 		"Client": response,
 		"Link": link,
-		"User": userSession,
+		"UserSession": userSession,
 		"Menu": m,
 	})
 

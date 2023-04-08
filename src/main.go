@@ -44,6 +44,21 @@ func main() {
 	http.Handle("POST", "/login", handlers.SignInUser)
 	http.Handle("GET", "/logout", handlers.Logout)
 	http.Handle("GET", "/users/show", http.AddMiddleware(handlers.HandelShowUser, middleware.CheckAuth()))
+	http.Handle("GET", "/users/create", http.AddMiddleware(handlers.HandleCreateUser, middleware.CheckAuth()))
+	http.Handle("POST", "/users/create", http.AddMiddleware(handlers.HandleCreateUser, middleware.CheckAuth()))
+	http.Handle("GET", "/users/edit", http.AddMiddleware(handlers.HandleUpdateUser, middleware.CheckAuth()))
+	http.Handle("POST", "/users/edit", http.AddMiddleware(handlers.HandleUpdateUser, middleware.CheckAuth()))
+	http.Handle("GET", "/users/detail", http.AddMiddleware(handlers.HandleGetUser, middleware.CheckAuth()))
+	http.Handle("GET", "/users/delete", http.AddMiddleware(handlers.HandleDeleteUser, middleware.CheckAuth()))
+
+	// Modules
+	http.Handle("GET", "/modules/show", http.AddMiddleware(handlers.HandelShowModule, middleware.CheckAuth()))
+
+	// Operations
+	http.Handle("GET", "/operations/show", http.AddMiddleware(handlers.HandelShowOperation, middleware.CheckAuth()))
+	
+	// Roles
+	http.Handle("GET", "/roles/show", http.AddMiddleware(handlers.HandelShowRole, middleware.CheckAuth()))
 
 	// Clients
 	http.Handle("GET", "/clients/show", http.AddMiddleware(handlers.HandleShowClient, middleware.CheckAuth()))

@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 // Client client access public
 type Client struct {
 	gorm.Model
@@ -164,8 +163,8 @@ func (c Client) GetOneClientGorm(id int64) (Client, error) {
 	return c, response.Error
 }
 
-// SaveEditClientGorm saved client edit
-func (c Client) SaveEditClientGorm(id int, cls *Client) (Client, error) {
+// UpdateClientGorm saved client edit
+func (c Client) UpdateClientGorm(id int, cls *Client) (Client, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
 	response := db.Model(&c).Where("id = ?", id).Updates(Client{FirstName: cls.FirstName, LastName: cls.LastName, Ci: cls.Ci, Birthday: cls.Birthday, Sex: cls.Sex})

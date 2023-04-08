@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/devnandito/webserver/models"
 	"github.com/devnandito/webserver/utils"
@@ -16,7 +17,7 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	title := "List users"
-	headers := [5]string{"ID", "Username", "Email", "Full name", "Action"}
+	headers := [6]string{"ID", "Username", "Email", "Full name", "Role", "Action"}
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
 	menu := filepath.Join("views", "menu.html")
@@ -35,9 +36,9 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 	tmpl, _ := template.ParseFiles(show, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string]interface{}{
 		"Title": title,
-		"Users": response,
+		"Objects": response,
 		"Headers": headers,
-		"User": userSession,
+		"UserSession": userSession,
 		"Menu": m,
 	})
 
@@ -45,6 +46,266 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error executing template: ", res)
 		return
 	}
+}
+
+func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	m := utils.GetMenu()
+	title := "Add user"
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	add := filepath.Join("views/users", "add.html")
+	ms := filepath.Join("views/messages", "message.html")
+	url := utils.GetUrl("users")
+	link := "/"+url.Url+"/"+url.Action["create"]
+	switch r.Method {
+	case "GET":
+		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
+		res := tmpl.Execute(w, map[string]interface{}{
+			"Title": title,
+			"Link": link,
+			"UserSession": userSession,
+			"Menu": m,
+		})
+	
+		if res != nil {
+			log.Println("Error executing template:", res)
+			return
+		}
+	case "POST":
+		roleId, _ := strconv.Atoi(r.PostFormValue("role"))
+		msg := &utils.ValidateUser{
+			Email: r.PostFormValue("email"),
+			Password: r.PostFormValue("password"),
+			Username: r.PostFormValue("username"),
+			Name: r.PostFormValue("name"),
+			RoleID: roleId,
+
+		}
+		
+		if !msg.Validate() {
+			tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": msg,
+				"Link": link,
+				"UserSession": userSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		} else {
+			data := models.User {
+				Username: msg.Username,
+				Email: msg.Email,
+				Name: msg.Name,
+				RoleID: int(msg.RoleID),
+			}
+			
+			response, err := usr.CreateUserGorm(&data)
+	
+			if err != nil {
+				log.Println(err)
+				http.Error(w, http.StatusText(500), 500)
+				return
+			}
+	
+			log.Println("Data inserted", response)
+			message := "Insertado correctamente"
+			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
+			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": message,
+				"Link": linkmsg,
+				"UserSession": userSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		}
+	}
+}
+
+func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	title := "Edit User"
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	edit := filepath.Join("views/users", "edit.html")
+	ms := filepath.Join("views/messages", "message.html")
+	url := utils.GetUrl("users")
+	link := "/"+url.Url+"/"+url.Action["edit"]
+	
+	switch r.Method {
+	case "GET":
+		tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
+		sid := r.URL.Query().Get("id")
+		// id, err :=  strconv.ParseInt(sid, 10, 64)
+		id, err :=  strconv.Atoi(sid)
+
+		if err != nil {
+			panic(err)
+		}
+
+		response, err := usr.GetOneUserGorm(id)
+		if err != nil {
+			log.Println("Error executing template", response)
+		}
+
+		msg := &utils.ValidateUser {
+			Username: response.Username,
+			Email: response.Email,
+			Name: response.Name,
+			RoleID: response.RoleID,
+		}
+
+		res := tmpl.Execute(w, map[string]interface{}{
+			"Title": title,
+			"Msg": msg,
+			"Link": link,
+			"ID": id,
+			"UserSession": userSession,
+			"Menu": m,
+		})
+	
+		if res != nil {
+			log.Println("Error executing template", res)
+			return
+		}
+
+	case "POST":
+		roleId, _ := strconv.Atoi(r.PostFormValue("role"))
+		msg := &utils.ValidateUser {
+			Username: r.PostFormValue("username"),
+			Email: r.PostFormValue("email"),
+			Name: r.PostFormValue("name"),
+			RoleID: roleId,
+		}
+
+		sid := r.PostFormValue("id")
+		id, err := strconv.Atoi(sid)
+		
+		if err != nil {
+			panic(err)
+		}
+
+		if !msg.ValidateEdit() {
+			tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": msg,
+				"Link": link,
+				"ID": id,
+				"UserSession": userSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		} else {
+			data := models.User {
+				Username: msg.Username,
+				Email: msg.Email,
+				Name: msg.Name,
+				RoleID: msg.RoleID,
+			}
+			
+			response, err := usr.UpdateUserGorm(id, &data)
+	
+			if err != nil {
+				log.Println(err)
+				http.Error(w, http.StatusText(500), 500)
+				return
+			}
+	
+			log.Println("Data updated", response)
+			message := "Actualizado correctamente"
+			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
+			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": message,
+				"Link": linkmsg,
+				"User": userSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		}
+	}
+}
+
+func HandleGetUser(w http.ResponseWriter, r *http.Request){
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	title := "Delete user"
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	delete := filepath.Join("views/users", "delete.html")
+	sid := r.URL.Query().Get("id")
+	url := utils.GetUrl("users")
+	link := "/"+url.Url+"/"+url.Action["delete"]+"?id="+sid
+	//id, err := strconv.ParseInt(sid, 10, 64)
+	id, err := strconv.Atoi(sid)
+	if err != nil {
+		panic(err)
+	}
+	response, err := usr.GetOneUserGorm(id)
+	if err != nil {
+		panic(err)
+	}
+
+	tmpl, _ := template.ParseFiles(delete, header, nav, menu, javascript, footer)
+	res := tmpl.Execute(w, map[string] interface{}{
+		"Title": title,
+		"User": response,
+		"Link": link,
+		"UserSession": userSession,
+		"Menu": m,
+	})
+
+	if res != nil {
+		log.Println("Error executing template", res)
+		return
+	}
+}
+
+func HandleDeleteUser(w http.ResponseWriter, r *http.Request){
+	sid := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(sid)
+
+	if err != nil {
+		panic(err)
+	}
+
+	response := usr.DeleteUserGorm(id)
+	log.Println("Deleted user", response)
+	http.Redirect(w, r, "/users/show", http.StatusFound)
 }
 
 func SignInUser(w http.ResponseWriter, r *http.Request) {
@@ -116,7 +377,7 @@ func SignUpUser(w http.ResponseWriter, r *http.Request) {
 			Email: r.PostFormValue("email"),
 			Password: r.PostFormValue("password"),
 			Username: r.PostFormValue("username"),
-			Fullname: r.PostFormValue("fullname"),
+			Name: r.PostFormValue("name"),
 		}
 		
 		if !msg.Validate() {
@@ -136,7 +397,7 @@ func SignUpUser(w http.ResponseWriter, r *http.Request) {
 			data := models.User {
 				Email: msg.Email,
 				Username: msg.Username,
-				Name: msg.Fullname,
+				Name: msg.Name,
 				RoleID: 1,
 				Password: pwd,
 			}

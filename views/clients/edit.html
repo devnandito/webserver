@@ -1,6 +1,11 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
+{{ $clients := .Menu.clients }}
+{{ $users := .Menu.users }}
+{{ $modules := .Menu.modules }}
+{{ $operations := .Menu.operations }}
+{{ $roles := .Menu.roles }}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -9,7 +14,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/clients/show"><i class="fa fa-dashboard"></i> Show client</a>
+        <a href="/{{index $clients 0}}/{{index $clients 1}}"><i class="fa fa-dashboard"></i> Show clients</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>

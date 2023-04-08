@@ -39,25 +39,6 @@ func (u *User) ToText(data []byte, v interface{}) error {
 	return json.Unmarshal(data, v)
 }
 
-// ShowUserGorm show user
-func (u User) ShowUserGorm() ([]User, error) {
-	conn := lib.NewConfig()
-	db := conn.DsnStringGorm()
-	db.AutoMigrate(&User{})
-	rows, err := db.Order("id asc").Model(&u).Rows()
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-	var response []User
-	for rows.Next() {
-		var item User
-		db.ScanRows(rows, &item)
-		response = append(response, item)
-	}
-	return response, err
-}
-
 // CreateUserGorm insert a new user
 func (u User) CreateUserGorm(data *User) (User, error) {
 	conn := lib.NewConfig()
@@ -78,10 +59,63 @@ func (u User) CreateUserGorm(data *User) (User, error) {
 func (u User) UpdateUserGorm(id int, usr *User) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
-	response := db.Model(&u).Where("id = ?", id).Updates(User{Username: usr.Username, Email: usr.Email, RoleID: usr.RoleID})
+	response := db.Model(&u).Where("id = ?", id).Updates(User{Username: usr.Username,Email: usr.Email, Name: usr.Name, RoleID: usr.RoleID})
 	return u, response.Error
 }
 
+// GetUserGorm get one user
+func (u User) GetOneUserGorm(id int) (User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Find(&u, id)
+	return u, response.Error
+}
+
+// DeleteDeleteGorm delete user
+func (u User) DeleteUserGorm(id int) error {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Delete(&u, id)
+	return response.Error
+}
+
+// ShowClientGorm show client
+func (u User) ShowUserGorm() ([]User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+  var users []User
+	response := db.Find(&users)
+	return users, response.Error
+}
+
+// ChangePassword saved user edit
+func (u User) SaveEditUserGorm(id int, usr *User) (User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Model(&u).Where("id = ?", id).Updates(User{Username: usr.Username, Email: usr.Email, Password: usr.Password, RoleID: usr.RoleID})
+	return u, response.Error
+}
+
+// ShowUserGorm show user
+func (u User) ShowUserGorm1() ([]User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	db.AutoMigrate(&User{})
+	rows, err := db.Order("id asc").Model(&u).Rows()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	var response []User
+	for rows.Next() {
+		var item User
+		db.ScanRows(rows, &item)
+		response = append(response, item)
+	}
+	return response, err
+}
+
+// Search user
 func (u User) SearchUser(data *User) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
@@ -89,6 +123,7 @@ func (u User) SearchUser(data *User) (User, error) {
 	return u, response.Error
 }
 
+// Search user for ID
 func (u User) SearchUserID(data string) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
@@ -96,6 +131,7 @@ func (u User) SearchUserID(data string) (User, error) {
 	return u, response.Error
 }
 
+// Verify user
 func (u User) VerifyUser(email string) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
