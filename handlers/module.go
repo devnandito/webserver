@@ -16,7 +16,7 @@ var mod models.Module
 func HandelShowModule(w http.ResponseWriter, r *http.Request) {
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
-	title := "List Module"
+	title := "List Modules"
 	headers := [3]string{"ID", "Description", "Action"}
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")

@@ -52,10 +52,12 @@
               {{ end }}
             </div>
             <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="module" value="{{.Msg.ModuleID}}" placeholder="Module">
-              </div>
+              <select class="form-control" name="module">
+                <option value="" selected>Open this select menu</option>
+                {{ range .Modules}}
+                <option value="{{.ID}}">{{.Description}}</option>
+                {{ end}}
+              </select>
               {{ with .Msg.Errors.ModuleID }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}

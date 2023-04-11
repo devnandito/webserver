@@ -29,7 +29,7 @@ type Client struct {
 
 // BirthdayDateStr conver to string
 func (c Client) BirthdayDateStr() string {
-	return c.Birthday.Format("2006-01-02")
+	return c.Birthday.Format("2006-01-02T15:04:05")
 }
 // BirthdayTime convert string to time
 func (c Client) BirthdayTime(timeStr string) (timeT time.Time) {

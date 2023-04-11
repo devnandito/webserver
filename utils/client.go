@@ -17,7 +17,7 @@ type ValidateClient struct {
 
 // BirthdayDateStr conver to string
 func (msg ValidateClient) BirthdayDateStr() string {
-	return msg.Birthday.Format("2006-01-02")
+	return msg.Birthday.Format("2006-01-02T15:04:05")
 }
 
 // BirthdayTime convert string to time

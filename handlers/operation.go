@@ -26,13 +26,13 @@ func HandelShowOperation(w http.ResponseWriter, r *http.Request) {
 	show := filepath.Join("views/operations", "show.html")
 	response, err := op.ShowOperationGorm()
 	userSession := session.Values["username"]
-
+	
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-
+	
 	tmpl, _ := template.ParseFiles(show, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string]interface{}{
 		"Title": title,
@@ -61,12 +61,20 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 	add := filepath.Join("views/operations", "add.html")
 	ms := filepath.Join("views/messages", "message.html")
 	url := m[2]
+	modules, err := mod.ShowModuleGorm()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 	switch r.Method {
 	case "GET":
+
 		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"UserSession": userSession,
+			"Modules": modules,
 			"Menu": m,
 		})
 	
@@ -86,6 +94,7 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": msg,
 				"UserSession": userSession,
+				"Modules": modules,
 				"Menu": m,
 			})
 
@@ -144,7 +153,12 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 	edit := filepath.Join("views/operations", "edit.html")
 	ms := filepath.Join("views/messages", "message.html")
 	url := m[2]
-	
+	modules, err := mod.ShowModuleGorm()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 	switch r.Method {
 	case "GET":
 		tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
@@ -170,6 +184,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
+			"Modules": modules,
 			"Menu": m,
 		})
 	
@@ -198,6 +213,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 				"Msg": msg,
 				"ID": id,
 				"UserSession": userSession,
+				"Modules": modules,
 				"Menu": m,
 			})
 
@@ -210,6 +226,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 			if err != nil {
 				panic(err)
 			}
+			
 			data := models.Operation {
 				Description: msg.Description,
 				ModuleID: moduleid,

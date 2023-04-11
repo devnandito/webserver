@@ -63,14 +63,12 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 	add := filepath.Join("views/clients", "add.html")
 	ms := filepath.Join("views/messages", "message.html")
 	url := m[0]
-	link := "/"+url.Url+"/"+url.Show
 
 	switch r.Method {
 	case "GET":
 		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
-			"Link": link,
 			"UserSession": userSession,
 			"Menu": m,
 		})
@@ -94,7 +92,6 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
-				"Link": link,
 				"UserSession": userSession,
 				"Menu": m,
 			})
@@ -174,6 +171,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			Firstname: response.FirstName,
 			Lastname: response.LastName,
 			Sex: response.Sex,
+			Birthday: response.Birthday,
 		}
 
 		res := tmpl.Execute(w, map[string]interface{}{

@@ -81,7 +81,7 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="birthday" value="{{.Msg.BirthdayDateStr}}" placeholder="Birthday">
+                <input class="form-control" type="text" name="birthday" value="{{.Msg.BirthdayDateStr}}" placeholder="1900-01-01T21:01:01">
               </div>
               {{ with .Msg.Errors.BirthdayDateStr }}
                 <strong class="text-danger">{{ . }}</strong>
