@@ -1,21 +1,20 @@
 {{ define "menu" }}
-
-{{ $clients := .Menu.clients }}
-{{ $users := .Menu.users }}
-{{ $modules := .Menu.modules }}
-{{ $operations := .Menu.operations }}
-{{ $roles := .Menu.roles }}
+{{ $clients := index .Menu 0 }}
+{{ $modules := index .Menu 1 }}
+{{ $operations := index .Menu 2 }}
+{{ $roles := index .Menu 3 }}
+{{ $users := index .Menu 4}}
+{{ $dashboard := index .Menu 5}}
 
 <aside class="main-sidebar">
   <section class="sidebar">
     <ul class="sidebar-menu">
       <li class="active">
-        <a href="/dashboard">
+        <a href="/{{$dashboard.Url}}">
           <i class="fa fa-home"></i>
           <span>Home</span>
         </a>
       </li>
-      <!-- if request.user.profile.level.id == 1 -->
       <li class="treeview">
         <a href="">
           <i class="fa fa-list-ul"></i>
@@ -26,33 +25,31 @@
         </a>
         <ul class="treeview-menu">
           <li>
-            <a href="/{{index $users 0}}/{{index $users 1}}">
+            <a href="/{{$users.Url}}/{{$users.Show}}">
               <i class="fa fa-circle-o"></i>
               <span>Users</span>
             </a>
           </li>
           <li>
-            <a href="/{{index $operations 0}}/{{index $operations 1}}">
+            <a href="/{{$operations.Url}}/{{$operations.Show}}">
               <i class="fa fa-circle-o"></i>
               <span>Operations</span>
             </a>
           </li>
           <li>
-            <a href="/{{index $roles 0}}/{{index $roles 1}}">
+            <a href="/{{$roles.Url}}/{{$roles.Show}}">
               <i class="fa fa-circle-o"></i>
               <span>Roles</span>
             </a>
           </li>
           <li>
-            <a href="/{{index $modules 0}}/{{index $modules 1}}">
+            <a href="/{{$modules.Url}}/{{$modules.Show}}">
               <i class="fa fa-circle-o"></i>
               <span>Modules</span>
             </a>
           </li>
         </ul>
       </li>
-      <!--  endif
-        if request.user.profile.level.id == 1 or  request.user.profile.level.id == 6 -->
       <li>
         <a href="">
           <i class="fa fa-th"></i>
@@ -65,10 +62,8 @@
           <span>Products</span>
         </a>
       </li>
-      <!-- endif
-        if request.user.profile.level.id == 1 or  request.user.profile.level.id == 2 -->
       <li>
-        <a href="/{{index $clients 0}}/{{index $clients 1}}">
+        <a href="/{{$clients.Url}}/{{$clients.Show}}">
           <i class="fa fa-users"></i>
           <span>Clients</span>
         </a>
@@ -102,7 +97,6 @@
           </li>
         </ul>
       </li>
-      <!-- endif -->
     </ul>
   </section>
 </aside>

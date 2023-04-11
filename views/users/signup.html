@@ -14,10 +14,10 @@
     <strong class="text-danger">{{index . "M"}}</strong>
     <form action="/register" method="post">
       <div class="form-group has-feedback">
-        <input type="text" name="fullname" class="form-control" placeholder="Full name">
+        <input type="text" name="name" class="form-control" placeholder="Full name">
         <span class="glyphicon glyphicon-file form-control-feedback"></span>
       </div>
-      {{ with .Msg.Errors.Fullname }}
+      {{ with .Msg.Errors.Name }}
         <strong class="text-danger">{{ . }}</strong>
       {{ end }}
       <div class="form-group has-feedback">

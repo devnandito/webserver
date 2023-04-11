@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+
 	"github.com/devnandito/webserver/lib"
 	"gorm.io/gorm"
 )
@@ -24,25 +25,6 @@ func (o *Operation) ToText(data []byte, v interface{}) error {
 	return json.Unmarshal(data, v)
 }
 
-// ShowOperationGorm show user
-func (o Operation) ShowOperationGorm() ([]Operation, error) {
-	conn := lib.NewConfig()
-	db := conn.DsnStringGorm()
-	db.AutoMigrate(&Operation{})
-	rows, err := db.Order("id asc").Model(&o).Rows()
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-	var response []Operation
-	for rows.Next() {
-		var item Operation
-		db.ScanRows(rows, &item)
-		response = append(response, item)
-	}
-	return response, err
-}
-
 // CreateOperationGorm created a new operation
 func (o Operation) CreateOperationGorm(op *Operation) (Operation, error){
 	conn := lib.NewConfig()
@@ -55,4 +37,37 @@ func (o Operation) CreateOperationGorm(op *Operation) (Operation, error){
 	}
 	
 	return data, response.Error
+}
+
+// GetOperationGorm get one module
+func (o Operation) GetOneOperationGorm(id int) (Operation, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Find(&o, id)
+	return o, response.Error
+}
+
+// UpdateOperationGorm saved operation edit
+func (o Operation) UpdateOperationGorm(id int, op *Operation) (Operation, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Model(&o).Where("id = ?", id).Updates(Operation{Description: op.Description, ModuleID: op.ModuleID})
+	return o, response.Error
+}
+
+// DeleteOperationGorm delete operation
+func (o Operation) DeleteOperationGorm(id int) error {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Delete(&o, id)
+	return response.Error
+}
+
+// ShowOperationGorm show operation
+func (o Operation) ShowOperationGorm() ([]Operation, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+  var objects []Operation
+	response := db.Find(&objects)
+	return objects, response.Error
 }

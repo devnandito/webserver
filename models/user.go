@@ -83,9 +83,9 @@ func (u User) DeleteUserGorm(id int) error {
 func (u User) ShowUserGorm() ([]User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
-  var users []User
-	response := db.Find(&users)
-	return users, response.Error
+  var objects []User
+	response := db.Find(&objects)
+	return objects, response.Error
 }
 
 // ChangePassword saved user edit

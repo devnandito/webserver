@@ -1,11 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $clients := .Menu.clients }}
-{{ $users := .Menu.users }}
-{{ $modules := .Menu.modules }}
-{{ $operations := .Menu.operations }}
-{{ $roles := .Menu.roles }}
+{{ $uri := index .Menu 4}}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -14,7 +10,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{index $users 0}}/{{index $users 1}}"><i class="fa fa-dashboard"></i> Show users</a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show users</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -44,7 +40,7 @@
         </div>
       </div>
       <div class="box-body">
-        <form action="{{.Link}}" method="post">
+        <form action="/{{$uri.Url}}/{{$uri.Create}}" method="post">
           <!--begin form-->
             <div class="form-group">
               <div class="input-group">
@@ -67,9 +63,9 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="fullname" value="{{.Msg.Fullname}}" placeholder="Full name">
+                <input class="form-control" type="text" name="name" value="{{.Msg.Name}}" placeholder="Full name">
               </div>
-              {{ with .Msg.Errors.Fullname }}
+              {{ with .Msg.Errors.Name }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>

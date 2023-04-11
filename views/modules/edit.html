@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $uri := index .Menu 4}}
+{{ $uri := index .Menu 1}}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -10,7 +10,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show users</a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show modules</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -52,36 +52,9 @@
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-              <input class="form-control" type="text" name="username" value="{{.Msg.Username}}" placeholder="Username">
+              <input class="form-control" type="text" name="description" value="{{.Msg.Description}}" placeholder="Description">
             </div>
-            {{ with .Msg.Errors.Username }}
-              <strong class="text-danger">{{ . }}</strong>
-            {{ end }}
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-              <input class="form-control" type="text" name="email" value="{{.Msg.Email}}" placeholder="Email">
-            </div>
-            {{ with .Msg.Errors.Email }}
-              <strong class="text-danger">{{ . }}</strong>
-            {{ end }}
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-              <input class="form-control" type="text" name="name" value="{{.Msg.Name}}" placeholder="Full name">
-            </div>
-            {{ with .Msg.Errors.Name }}
-              <strong class="text-danger">{{ . }}</strong>
-            {{ end }}
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-              <input class="form-control" type="text" name="role" value="{{.Msg.RoleID}}" placeholder="Role">
-            </div>
-            {{ with .Msg.Errors.RoleID }}
+            {{ with .Msg.Errors.Description }}
               <strong class="text-danger">{{ . }}</strong>
             {{ end }}
           </div>

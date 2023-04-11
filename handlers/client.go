@@ -62,8 +62,8 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	add := filepath.Join("views/clients", "add.html")
 	ms := filepath.Join("views/messages", "message.html")
-	url := utils.GetUrl("clients")
-	link := "/"+url.Url+"/"+url.Action["create"]
+	url := m[0]
+	link := "/"+url.Url+"/"+url.Show
 
 	switch r.Method {
 	case "GET":
@@ -123,7 +123,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 			log.Println("Data inserted", response)
 			message := "Insertado correctamente"
 			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
-			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			linkmsg := "/"+url.Url+"/"+url.Show
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
@@ -152,8 +152,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 	footer := filepath.Join("views", "footer.html")
 	edit := filepath.Join("views/clients", "edit.html")
 	ms := filepath.Join("views/messages", "message.html")
-	url := utils.GetUrl("clients")
-	link := "/"+url.Url+"/"+url.Action["edit"]
+	url := m[0]
 	
 	switch r.Method {
 	case "GET":
@@ -180,7 +179,6 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"Msg": msg,
-			"Link": link,
 			"ID": id,
 			"UserSession": userSession,
 			"Menu": m,
@@ -213,7 +211,6 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
-				"Link": link,
 				"ID": id,
 				"UserSession": userSession,
 				"Menu": m,
@@ -243,7 +240,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			log.Println("Data updated", response)
 			message := "Actualizado correctamente"
 			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
-			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			linkmsg := "/"+url.Url+"/"+url.Show
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
@@ -272,8 +269,6 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 	footer := filepath.Join("views", "footer.html")
 	delete := filepath.Join("views/clients", "delete.html")
 	sid := r.URL.Query().Get("id")
-	url := utils.GetUrl("clients")
-	link := "/"+url.Url+"/"+url.Action["delete"]+"?id="+sid
 	id, err := strconv.ParseInt(sid, 10, 64)
 	if err != nil {
 		panic(err)
@@ -286,8 +281,7 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 	tmpl, _ := template.ParseFiles(delete, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string] interface{}{
 		"Title": title,
-		"Client": response,
-		"Link": link,
+		"Object": response,
 		"UserSession": userSession,
 		"Menu": m,
 	})

@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $dashboard := index .Menu 5}}
+{{ $uri := index .Menu 2}}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -10,7 +10,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{$dashboard.Url}}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show operations</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -42,8 +42,15 @@
       <div class="box-body">
         <div class="card text-center">
           <div class="card-body">
-            <h3 class="card-title">{{ .Msg }}</h3>
-            <a href="{{.Link}}" class="btn btn-success"><i class="fa fa-check-circle-o fa-5x"></i></a>
+            <h3 class="card-title">
+              {{ with .Object }}
+                <p>ID: {{ .ID }}</p>   
+                <p>Description: {{.Description}}</p>
+                <p>Module: {{.ModuleID}}</p>
+              </h3>
+              <a href="/{{$uri.Url}}/{{$uri.Show}}" class="btn btn-success">Volver</a>
+              <a href="/{{$uri.Url}}/{{$uri.Delete}}?id={{.ID}}" class="btn btn-danger">Borrar</a>
+              {{ end }}
           </div>
         </div>
       </div>

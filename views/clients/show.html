@@ -1,19 +1,15 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-
-{{ $clients := .Menu.clients }}
-{{ $users := .Menu.users }}
-{{ $modules := .Menu.modules }}
-{{ $operations := .Menu.operations }}
-{{ $roles := .Menu.roles }}
+{{ $clients := index .Menu 0 }}
+{{ $dashboard := index .Menu 5}}
 
 <div class="content-wrapper">
   <section class="content-header">
     <h1>{{index . "Title"}}</h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{index $clients 0}}/{{index $clients 1}}"><i class="fa fa-dashboard"></i> Home</a>
+        <a href="/{{$dashboard.Url}}"><i class="fa fa-dashboard"></i> Dahboard</a>
       </li>
       <li class="active">Show clients</li>
     </ol>
@@ -21,7 +17,7 @@
   <section class="content">
     <div class="box">
       <div class="box-header with-border">
-        <a href="/{{index $clients 0}}/{{index $clients 2}}" class="btn btn-primary"> Add clients </a>
+        <a href="/{{$clients.Url}}/{{$clients.Create}}" class="btn btn-primary"> Add clients </a>
         <div class="box-tools pull-right">
           <button
             type="button"
@@ -63,8 +59,8 @@
               <td>{{.Sex}}</td>
               <td>
                 <div class="btn-groups">
-                  <a href="/{{index $clients 0}}/{{index $clients 3}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                  <a href="/{{index $clients 0}}/{{index $clients 4}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                  <a href="/{{$clients.Url}}/{{$clients.Put}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{$clients.Url}}/{{$clients.Detail}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
                 </div>
               </td>
             </tr>

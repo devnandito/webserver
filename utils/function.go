@@ -9,33 +9,22 @@ type Link struct {
 
 type Menu struct {
 	Url string
-	Action map[int]string
+	Show string
+	Create string
+	Put string
+	Delete string
+	Detail string
 }
 
-func GetUrl(url string) *Link {
-	m := make(map[string]string)
-	m["show"] = "show"
-	m["create"] = "create"
-	m["edit"] = "edit"
-	m["delete"] = "delete"
-	m["detail"] = "detail"
-	m["success"] = "success"
-	
-	data := &Link{
-		Url: url,
-		Action: m,
+func GetMenu() []Menu {
+	m := []Menu{
+		{Url: "clients", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "modules", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "operations", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "roles", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "users", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "dashboard", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
 	}
-
-	return data
-}
-
-func GetMenu() map[string][]string {
-	clients := []string{"clients", "show", "create", "edit", "detail", "delete"}
-	users := []string{"users", "show", "create", "edit", "detail", "delete"}
-	modules := []string{"modules", "show", "create", "edit", "detail", "delete"}
-	operations := []string{"operations", "show", "create", "edit", "detail", "delete"}
-	roles := []string{"roles", "show", "create", "edit", "detail", "delete"}
-	m := map[string][]string{"clients": clients, "users": users, "modules": modules, "operations": operations, "roles": roles}
 	return m
 }
 
@@ -44,3 +33,20 @@ func BirthdayTime(timeStr string) (timeT time.Time) {
 	t, _ := time.Parse(Format, timeStr)
 	return t
 }
+
+// func GetUrl(url string) *Link {
+// 	m := make(map[string]string)
+// 	m["show"] = "show"
+// 	m["create"] = "create"
+// 	m["put"] = "put"
+// 	m["delete"] = "delete"
+// 	m["detail"] = "detail"
+// 	m["success"] = "success"
+	
+// 	data := &Link{
+// 		Url: url,
+// 		Action: m,
+// 	}
+
+// 	return data
+// }

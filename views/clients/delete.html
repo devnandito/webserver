@@ -1,11 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $clients := .Menu.clients }}
-{{ $users := .Menu.users }}
-{{ $modules := .Menu.modules }}
-{{ $operations := .Menu.operations }}
-{{ $roles := .Menu.roles }}
+{{ $uri := index .Menu 0 }}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -14,7 +10,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{index $clients 0}}/{{index $clients 1}}"><i class="fa fa-dashboard"></i> Show clients</a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show Clients</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -47,12 +43,12 @@
         <div class="card text-center">
           <div class="card-body">
             <h3 class="card-title">
-              {{ with .Client }}
+              {{ with .Object }}
                 ID: {{.ID}} Cedula: {{.Ci}} Nombre: {{.FirstName }} {{.LastName}}
+              </h3>
+              <a href="/{{$uri.Url}}/{{$uri.Show}}" class="btn btn-success">Volver</a>
+              <a href="/{{$uri.Url}}/{{$uri.Delete}}?id={{.ID}}" class="btn btn-danger">Borrar</a>
               {{ end }}
-            </h3>
-            <a href="/{{index $clients 0}}/{{index $clients 1}}" class="btn btn-success">Volver</a>
-            <a href="{{.Link}}" class="btn btn-danger">Borrar</a>
           </div>
         </div>
       </div>

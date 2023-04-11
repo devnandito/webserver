@@ -5,7 +5,7 @@ import (
 	_ "time"
 
 	"github.com/devnandito/webserver/lib"
-	
+
 	"gorm.io/gorm"
 )
 
@@ -30,25 +30,6 @@ func (r *Role) ToText(data []byte, v interface{}) error {
 	return json.Unmarshal(data, v)
 }
 
-// ShowRoleGorm show role
-func (r Role) ShowRoleGorm() ([]Role, error) {
-	conn := lib.NewConfig()
-	db := conn.DsnStringGorm()
-	db.AutoMigrate(&Role{})
-	rows, err := db.Order("id asc").Model(&r).Rows()
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-	var response []Role
-	for rows.Next() {
-		var item Role
-		db.ScanRows(rows, &item)
-		response = append(response, item)
-	}
-	return response, err
-}
-
 // CreateRoleGorm insert a new role
 func (r Role) CreateRoleGorm(data *Role) (Role, error) {
 	conn := lib.NewConfig()
@@ -61,10 +42,35 @@ func (r Role) CreateRoleGorm(data *Role) (Role, error) {
 	return role, response.Error
 }
 
-// UpdateRoleGorm  role edit
+// GetOperationGorm get one role
+func (r Role) GetOneRoleGorm(id int) (Role, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Find(&r, id)
+	return r, response.Error
+}
+
+// UpdateRoleGorm role edit
 func (r Role) UpdateRoleGorm(id int, data *Role) (Role, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
 	response := db.Model(&r).Where("id = ?", id).Update("description", data.Description)	
 	return r, response.Error
+}
+
+// DeleteRoleGorm delete role
+func (r Role) DeleteRoleGorm(id int) error {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Delete(&r, id)
+	return response.Error
+}
+
+// ShowRoleGorm show role
+func (r Role) ShowRoleGorm() ([]Role, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+  var objects []Role
+	response := db.Find(&objects)
+	return objects, response.Error
 }

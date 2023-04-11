@@ -60,14 +60,12 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	add := filepath.Join("views/users", "add.html")
 	ms := filepath.Join("views/messages", "message.html")
-	url := utils.GetUrl("users")
-	link := "/"+url.Url+"/"+url.Action["create"]
+	url := m[4]
 	switch r.Method {
 	case "GET":
 		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
-			"Link": link,
 			"UserSession": userSession,
 			"Menu": m,
 		})
@@ -92,7 +90,6 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
-				"Link": link,
 				"UserSession": userSession,
 				"Menu": m,
 			})
@@ -120,7 +117,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			log.Println("Data inserted", response)
 			message := "Insertado correctamente"
 			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
-			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			linkmsg := "/"+url.Url+"/"+url.Show
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
@@ -149,8 +146,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 	footer := filepath.Join("views", "footer.html")
 	edit := filepath.Join("views/users", "edit.html")
 	ms := filepath.Join("views/messages", "message.html")
-	url := utils.GetUrl("users")
-	link := "/"+url.Url+"/"+url.Action["edit"]
+	url := m[4]
 	
 	switch r.Method {
 	case "GET":
@@ -178,7 +174,6 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"Msg": msg,
-			"Link": link,
 			"ID": id,
 			"UserSession": userSession,
 			"Menu": m,
@@ -210,7 +205,6 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
-				"Link": link,
 				"ID": id,
 				"UserSession": userSession,
 				"Menu": m,
@@ -239,7 +233,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 			log.Println("Data updated", response)
 			message := "Actualizado correctamente"
 			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
-			linkmsg := "/"+url.Url+"/"+url.Action["show"]
+			linkmsg := "/"+url.Url+"/"+url.Show
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,
@@ -268,8 +262,6 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request){
 	footer := filepath.Join("views", "footer.html")
 	delete := filepath.Join("views/users", "delete.html")
 	sid := r.URL.Query().Get("id")
-	url := utils.GetUrl("users")
-	link := "/"+url.Url+"/"+url.Action["delete"]+"?id="+sid
 	//id, err := strconv.ParseInt(sid, 10, 64)
 	id, err := strconv.Atoi(sid)
 	if err != nil {
@@ -283,8 +275,7 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request){
 	tmpl, _ := template.ParseFiles(delete, header, nav, menu, javascript, footer)
 	res := tmpl.Execute(w, map[string] interface{}{
 		"Title": title,
-		"User": response,
-		"Link": link,
+		"Object": response,
 		"UserSession": userSession,
 		"Menu": m,
 	})

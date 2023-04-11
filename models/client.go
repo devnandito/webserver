@@ -183,9 +183,9 @@ func (c Client) DeleteClientGorm(id int) error {
 func (c Client) ShowClientGorm() ([]Client, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
-  var clients []Client
-	response := db.Find(&clients)
-	return clients, response.Error
+  var objects []Client
+	response := db.Find(&objects)
+	return objects, response.Error
 }
 
 // ShowClientGorm show client
