@@ -16,6 +16,12 @@ type Menu struct {
 	Detail string
 }
 
+type FormModule struct {
+	Value string
+	Option string
+	Selected string
+}
+
 func GetMenu() []Menu {
 	m := []Menu{
 		{Url: "clients", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},

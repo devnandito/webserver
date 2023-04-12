@@ -62,8 +62,8 @@
           <div class="form-group">
             <select class="form-control" name="module">
               {{ range .Modules}}
-              <option value="{{.ID}}">{{.Description}}</option>
-              {{ end}}
+              <option {{.Selected}} value="{{.Value}}">{{.Option}}</option>
+              {{ end }}
             </select>
             {{ with .Msg.Errors.ModuleID }}
               <strong class="text-danger">{{ . }}</strong>

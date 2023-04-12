@@ -67,9 +67,9 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
+
 	switch r.Method {
 	case "GET":
-
 		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
@@ -170,8 +170,25 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 		}
 
 		response, err := op.GetOneOperationGorm(id)
+		modid := response.ModuleID
 		if err != nil {
 			log.Println("Error executing template", response)
+		}
+
+		var rs []utils.FormModule
+		for _, v := range modules {
+			if int(v.ID) == modid {
+				rs = append(rs, utils.FormModule{
+					Value: strconv.FormatUint(uint64(v.ID), 10),
+					Option: v.Description,
+					Selected: "selected",
+				})
+			} else if int(v.ID) != modid {
+				rs = append(rs, utils.FormModule{
+					Value: strconv.FormatUint(uint64(v.ID), 10),
+					Option: v.Description,
+				})
+			}
 		}
 
 		msg := &utils.ValidateOperation {
@@ -184,7 +201,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
-			"Modules": modules,
+			"Modules": rs,
 			"Menu": m,
 		})
 	
