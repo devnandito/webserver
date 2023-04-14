@@ -61,8 +61,13 @@
           </div>
           <div class="form-group">
             <select class="form-control" name="module">
+              <option value="">Open this select menu</option>
               {{ range .Modules}}
-              <option {{.Selected}} value="{{.Value}}">{{.Option}}</option>
+                {{ if eq $fk .ID }}
+                <option selected value="{{.ID}}">{{.Description}}</option>
+                {{ else }}
+                <option value="{{.ID}}">{{.Description}}</option>
+                {{ end }}
               {{ end }}
             </select>
             {{ with .Msg.Errors.ModuleID }}

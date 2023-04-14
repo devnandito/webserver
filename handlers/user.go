@@ -61,12 +61,19 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	add := filepath.Join("views/users", "add.html")
 	ms := filepath.Join("views/messages", "message.html")
 	url := m[4]
+
+	roles, err := rol.ShowRoleGorm()
+	if err != nil {
+		log.Println(err)
+	}
+
 	switch r.Method {
 	case "GET":
 		tmpl, _ := template.ParseFiles(add, header, nav, menu, javascript, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"UserSession": userSession,
+			"Roles": roles,
 			"Menu": m,
 		})
 	
@@ -75,14 +82,12 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		roleId, _ := strconv.Atoi(r.PostFormValue("role"))
 		msg := &utils.ValidateUser{
 			Email: r.PostFormValue("email"),
 			Password: r.PostFormValue("password"),
 			Username: r.PostFormValue("username"),
 			Name: r.PostFormValue("name"),
-			RoleID: roleId,
-
+			RoleID: r.PostFormValue("role"),
 		}
 		
 		if !msg.Validate() {
@@ -91,6 +96,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": msg,
 				"UserSession": userSession,
+				"Roles": roles,
 				"Menu": m,
 			})
 
@@ -99,11 +105,16 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else {
+			id, err := strconv.Atoi(msg.RoleID)
+			if err != nil {
+				log.Println(err)
+			}
+
 			data := models.User {
 				Username: msg.Username,
 				Email: msg.Email,
 				Name: msg.Name,
-				RoleID: int(msg.RoleID),
+				RoleID: id,
 			}
 			
 			response, err := usr.CreateUserGorm(&data)
@@ -147,6 +158,10 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 	edit := filepath.Join("views/users", "edit.html")
 	ms := filepath.Join("views/messages", "message.html")
 	url := m[4]
+	roles, err := rol.ShowRoleGorm()
+	if err != nil {
+		log.Println(err)
+	}
 	
 	switch r.Method {
 	case "GET":
@@ -154,7 +169,6 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 		sid := r.URL.Query().Get("id")
 		// id, err :=  strconv.ParseInt(sid, 10, 64)
 		id, err :=  strconv.Atoi(sid)
-
 		if err != nil {
 			panic(err)
 		}
@@ -164,11 +178,12 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 			log.Println("Error executing template", response)
 		}
 
+
 		msg := &utils.ValidateUser {
 			Username: response.Username,
 			Email: response.Email,
 			Name: response.Name,
-			RoleID: response.RoleID,
+			RoleID: strconv.Itoa(response.RoleID),
 		}
 
 		res := tmpl.Execute(w, map[string]interface{}{
@@ -176,6 +191,8 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
+			"Roles": roles,
+			"FK": response.RoleID,
 			"Menu": m,
 		})
 	
@@ -185,19 +202,22 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 		}
 
 	case "POST":
-		roleId, _ := strconv.Atoi(r.PostFormValue("role"))
 		msg := &utils.ValidateUser {
 			Username: r.PostFormValue("username"),
 			Email: r.PostFormValue("email"),
 			Name: r.PostFormValue("name"),
-			RoleID: roleId,
+			RoleID: r.PostFormValue("role"),
 		}
 
 		sid := r.PostFormValue("id")
 		id, err := strconv.Atoi(sid)
-		
 		if err != nil {
 			panic(err)
+		}
+
+		rolid, err := strconv.Atoi(r.PostFormValue("role"))
+		if err != nil {
+			log.Println(err)
 		}
 
 		if !msg.ValidateEdit() {
@@ -207,6 +227,8 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 				"Msg": msg,
 				"ID": id,
 				"UserSession": userSession,
+				"Roles": roles,
+				"FK": rolid,
 				"Menu": m,
 			})
 
@@ -215,11 +237,16 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 				return
 			}
 		} else {
+			rolid, err := strconv.Atoi(msg.RoleID)
+			if err != nil {
+				log.Println(err)
+			}
+
 			data := models.User {
 				Username: msg.Username,
 				Email: msg.Email,
 				Name: msg.Name,
-				RoleID: msg.RoleID,
+				RoleID: rolid,
 			}
 			
 			response, err := usr.UpdateUserGorm(id, &data)

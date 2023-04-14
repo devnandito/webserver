@@ -1,6 +1,8 @@
 package utils
 
-import "time"
+import (
+	"time"
+)
 
 type Link struct {
 	Url string
@@ -14,12 +16,6 @@ type Menu struct {
 	Put string
 	Delete string
 	Detail string
-}
-
-type FormModule struct {
-	Value string
-	Option string
-	Selected string
 }
 
 func GetMenu() []Menu {
@@ -39,6 +35,30 @@ func BirthdayTime(timeStr string) (timeT time.Time) {
 	t, _ := time.Parse(Format, timeStr)
 	return t
 }
+
+// type FormModule struct {
+// 	Value string
+// 	Option string
+// 	Selected string
+// }
+
+// func SelectModuleOption(pk int, objects []models.Module) []FormModule {
+// 	for _, v := range objects {
+// 		if int(v.ID) == pk {
+// 			rs = append(rs, FormModule{
+// 				Value: strconv.FormatUint(uint64(v.ID), 10),
+// 				Option: v.Description,
+// 				Selected: "selected",
+// 			})
+// 		} else if int(v.ID) != pk {
+// 			rs = append(rs, FormModule{
+// 				Value: strconv.FormatUint(uint64(v.ID), 10),
+// 				Option: v.Description,
+// 			})
+// 		}
+// 	}
+// 	return rs
+// }
 
 // func GetUrl(url string) *Link {
 // 	m := make(map[string]string)

@@ -15,7 +15,7 @@ type ValidateUser struct {
 	Password string
 	Username string
 	Name string
-	RoleID int
+	RoleID string
 	Errors map[string]string
 }
 
@@ -89,6 +89,10 @@ func (msg *ValidateUser) Validate() bool {
 	if strings.TrimSpace(msg.Password) == "" {
 		msg.Errors["Password"] = "Please enter a password"
 	}
+
+	if strings.TrimSpace(msg.RoleID) == "" {
+		msg.Errors["RoleID"] = "Please enter a rol"
+	}
 	
 	return len(msg.Errors) == 0
 
@@ -107,6 +111,10 @@ func (msg *ValidateUser) ValidateEdit() bool {
 
 	if strings.TrimSpace(msg.Email) == "" {
 		msg.Errors["Email"] = "Please enter a email"
+	}
+
+	if strings.TrimSpace(msg.RoleID) == "" {
+		msg.Errors["RoleID"] = "Please enter a rol"
 	}
 
 	return len(msg.Errors) == 0

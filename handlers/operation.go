@@ -156,9 +156,8 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 	modules, err := mod.ShowModuleGorm()
 	if err != nil {
 		log.Println(err)
-		http.Error(w, http.StatusText(500), 500)
-		return
 	}
+
 	switch r.Method {
 	case "GET":
 		tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
@@ -170,25 +169,8 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 		}
 
 		response, err := op.GetOneOperationGorm(id)
-		modid := response.ModuleID
 		if err != nil {
 			log.Println("Error executing template", response)
-		}
-
-		var rs []utils.FormModule
-		for _, v := range modules {
-			if int(v.ID) == modid {
-				rs = append(rs, utils.FormModule{
-					Value: strconv.FormatUint(uint64(v.ID), 10),
-					Option: v.Description,
-					Selected: "selected",
-				})
-			} else if int(v.ID) != modid {
-				rs = append(rs, utils.FormModule{
-					Value: strconv.FormatUint(uint64(v.ID), 10),
-					Option: v.Description,
-				})
-			}
 		}
 
 		msg := &utils.ValidateOperation {
@@ -201,7 +183,8 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
-			"Modules": rs,
+			"Modules": modules,
+			"FK": response.ModuleID,
 			"Menu": m,
 		})
 	
@@ -218,9 +201,13 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 
 		sid := r.PostFormValue("id")
 		id, err := strconv.Atoi(sid)
-		
 		if err != nil {
 			panic(err)
+		}
+
+		modid, err := strconv.Atoi(r.PostFormValue("module"))
+		if err != nil {
+			log.Println(err)
 		}
 
 		if !msg.Validate() {
@@ -231,6 +218,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 				"ID": id,
 				"UserSession": userSession,
 				"Modules": modules,
+				"FK": modid,
 				"Menu": m,
 			})
 

@@ -2,6 +2,7 @@
 {{ template "nav" . }}
 {{ template "menu" . }}
 {{ $uri := index .Menu 4}}
+{{ $fk := .FK }}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -77,10 +78,16 @@
             {{ end }}
           </div>
           <div class="form-group">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-              <input class="form-control" type="text" name="role" value="{{.Msg.RoleID}}" placeholder="Role">
-            </div>
+            <select class="form-control" name="role">
+              <option value="">Open this select menu</option>
+              {{ range .Roles}}
+                {{ if eq $fk .ID }}
+                <option selected value="{{.ID}}">{{.Description}}</option>
+                {{ else }}
+                <option value="{{.ID}}">{{.Description}}</option>
+                {{ end }}
+              {{ end }}
+            </select>
             {{ with .Msg.Errors.RoleID }}
               <strong class="text-danger">{{ . }}</strong>
             {{ end }}
