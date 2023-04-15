@@ -63,6 +63,14 @@ func (u User) UpdateUserGorm(id int, usr *User) (User, error) {
 	return u, response.Error
 }
 
+// UpdateUserGorm update user
+func (u User) UpdatePwdUserGorm(id int, usr *User) (User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Model(&u).Where("id = ?", id).Updates(User{Password: usr.Password})
+	return u, response.Error
+}
+
 // GetUserGorm get one user
 func (u User) GetOneUserGorm(id int) (User, error) {
 	conn := lib.NewConfig()
@@ -79,21 +87,21 @@ func (u User) DeleteUserGorm(id int) error {
 	return response.Error
 }
 
-// ShowClientGorm show client
-func (u User) ShowUserGorm() ([]User, error) {
-	conn := lib.NewConfig()
-	db := conn.DsnStringGorm()
-  var objects []User
-	response := db.Find(&objects)
-	return objects, response.Error
-}
-
 // ChangePassword saved user edit
 func (u User) SaveEditUserGorm(id int, usr *User) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
 	response := db.Model(&u).Where("id = ?", id).Updates(User{Username: usr.Username, Email: usr.Email, Password: usr.Password, RoleID: usr.RoleID})
 	return u, response.Error
+}
+
+// ShowClientGorm show client
+func (u User) ShowUserGorm() ([]User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+  var objects []User
+	response := db.Preload("Role").Find(&objects)
+	return objects, response.Error
 }
 
 // ShowUserGorm show user
@@ -116,10 +124,18 @@ func (u User) ShowUserGorm1() ([]User, error) {
 }
 
 // Search user
-func (u User) SearchUser(data *User) (User, error) {
+func (u User) SearchUser(username *User) (User, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
-	response := db.Where("username = ?", data.Username).Find(&u)
+	response := db.Where("username = ?", username.Username).Find(&u)
+	return u, response.Error
+}
+
+// Search user
+func (u User) SearchUsername(username string) (User, error) {
+	conn := lib.NewConfig()
+	db := conn.DsnStringGorm()
+	response := db.Preload("Role").Where("username = ?", username).Find(&u)
 	return u, response.Error
 }
 

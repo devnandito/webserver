@@ -13,9 +13,38 @@ import (
 
 var usr models.User
 
-func HandelShowUser(w http.ResponseWriter, r *http.Request) {
+func HandleDashboard(w http.ResponseWriter, r *http.Request) {
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
+	title := "Dashboard"
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	show := filepath.Join("views/users", "dashboard.html")
+
+	tmpl, _ := template.ParseFiles(show, header, nav, menu, javascript, footer)
+	res := tmpl.Execute(w, map[string]interface{}{
+		"Title": title,
+		"UserSession": userSession,
+		"RoleSession": roleSession,
+		"Menu": m,
+	})
+
+	if res != nil {
+		log.Println("Error executing template: ", res)
+		return
+	}
+}
+
+func HandleShowUser(w http.ResponseWriter, r *http.Request) {
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "List users"
 	headers := [6]string{"ID", "Username", "Email", "Full name", "Role", "Action"}
 	header := filepath.Join("views", "header.html")
@@ -25,8 +54,6 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	show := filepath.Join("views/users", "show.html")
 	response, err := usr.ShowUserGorm()
-	userSession := session.Values["username"]
-
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)
@@ -39,6 +66,7 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 		"Objects": response,
 		"Headers": headers,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 
@@ -51,6 +79,7 @@ func HandelShowUser(w http.ResponseWriter, r *http.Request) {
 func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	m := utils.GetMenu()
 	title := "Add user"
 	header := filepath.Join("views", "header.html")
@@ -73,6 +102,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Roles": roles,
 			"Menu": m,
 		})
@@ -109,12 +139,14 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
+			pwd, _ := usr.GetPwdHash(msg.Password)
 
 			data := models.User {
 				Username: msg.Username,
 				Email: msg.Email,
 				Name: msg.Name,
 				RoleID: id,
+				Password: pwd,
 			}
 			
 			response, err := usr.CreateUserGorm(&data)
@@ -134,6 +166,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 				"Msg": message,
 				"Link": linkmsg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -149,6 +182,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Edit User"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -191,6 +225,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Roles": roles,
 			"FK": response.RoleID,
 			"Menu": m,
@@ -227,6 +262,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 				"Msg": msg,
 				"ID": id,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Roles": roles,
 				"FK": rolid,
 				"Menu": m,
@@ -265,7 +301,117 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request){
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
-				"User": userSession,
+				"UserSession": userSession,
+				"RoleSession": roleSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		}
+	}
+}
+
+func HandleChangePwd(w http.ResponseWriter, r *http.Request){
+	m := utils.GetMenu()
+	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
+	title := "Change password"
+	header := filepath.Join("views", "header.html")
+	nav := filepath.Join("views", "nav.html")
+	menu := filepath.Join("views", "menu.html")
+	javascript := filepath.Join("views", "javascript.html")
+	footer := filepath.Join("views", "footer.html")
+	edit := filepath.Join("views/users", "changepwd.html")
+	ms := filepath.Join("views/messages", "message.html")
+	url := m[4]
+	
+	switch r.Method {
+	case "GET":
+		tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
+		sid := r.URL.Query().Get("id")
+		id, err :=  strconv.Atoi(sid)
+		if err != nil {
+			panic(err)
+		}
+
+		response, err := usr.GetOneUserGorm(id)
+		if err != nil {
+			log.Println("Error executing template", response)
+		}
+
+
+		msg := &utils.ValidateUser {
+			Password: response.Password,
+		}
+
+		res := tmpl.Execute(w, map[string]interface{}{
+			"Title": title,
+			"Msg": msg,
+			"ID": id,
+			"UserSession": userSession,
+			"RoleSession": roleSession,
+			"Menu": m,
+		})
+	
+		if res != nil {
+			log.Println("Error executing template", res)
+			return
+		}
+
+	case "POST":
+		msg := &utils.ValidateUser {
+			Password: r.PostFormValue("password"),
+		}
+
+		sid := r.PostFormValue("id")
+		id, err := strconv.Atoi(sid)
+		if err != nil {
+			panic(err)
+		}
+
+		if !msg.ValidatePwd() {
+			tmpl, _ := template.ParseFiles(edit, header, nav, menu, javascript, footer)
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": msg,
+				"ID": id,
+				"UserSession": userSession,
+				"RoleSession": roleSession,
+				"Menu": m,
+			})
+
+			if res != nil {
+				log.Println("Error executing template", res)
+				return
+			}
+		} else {
+			pwd, _ := usr.GetPwdHash(msg.Password)
+			data := models.User {
+				Password: pwd,
+			}
+			
+			response, err := usr.UpdatePwdUserGorm(id, &data)
+	
+			if err != nil {
+				log.Println(err)
+				http.Error(w, http.StatusText(500), 500)
+				return
+			}
+	
+			log.Println("Data updated", response)
+			message := "Actualizado correctamente"
+			tmpl, _ := template.ParseFiles(ms, header, nav, menu, javascript, footer)
+			linkmsg := "/"+url.Url+"/"+url.Show
+			res := tmpl.Execute(w, map[string]interface{}{
+				"Title": title,
+				"Msg": message,
+				"Link": linkmsg,
+				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -281,6 +427,7 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Delete user"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -304,6 +451,7 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request){
 		"Title": title,
 		"Object": response,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 
@@ -332,8 +480,12 @@ func SignInUser(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	signin := filepath.Join("views/users", "signin.html")
 	link := "/login"
+	session := utils.GetSession(r)
 	switch r.Method {
 	case "GET":
+		if session.Values["authenticated"] == true {
+			http.Redirect(w, r, "/dashboard", http.StatusFound)
+		}
 		tmpl, _ := template.ParseFiles(signin, header, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
@@ -367,8 +519,9 @@ func SignInUser(w http.ResponseWriter, r *http.Request) {
 			userSession := utils.GetUser(r.PostFormValue("email"))
 			session.Values["authenticated"] = true
 			session.Values["username"] = userSession.Username
+			session.Values["role"] = userSession.RoleID
 			session.Save(r, w)
-			http.Redirect(w, r, "/users/show", http.StatusFound)
+			http.Redirect(w, r, "/dashboard", http.StatusFound)
 		}
 	}
 }

@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $users := index .Menu 4}}
+{{ $profiles := index .Menu 6}}
 {{ $dashboard := index .Menu 5}}
 
 <div class="content-wrapper">
@@ -11,7 +11,7 @@
       <li>
         <a href="/{{$dashboard.Url}}"><i class="fa fa-dashboard"></i> Dashboard</a>
       </li>
-      <li class="active">Show users</li>
+      <li class="active">Show profile</li>
     </ol>
   </section>
   <section class="content">
@@ -39,7 +39,30 @@
         </div>
       </div>
       <div class="box-body">
-        <h4>{{.Title}}</h4>
+        <table class="table table-bordered table-striped dt-responsive tablas">
+          <thead>
+            <tr>
+              {{ range .Headers }}
+                <th>{{.}}</th>
+              {{ end}}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{.Object.ID}}</td>
+              <td>{{.Object.Username}}</td>
+              <td>{{.Object.Email}}</td>
+              <td>{{.Object.Name}}</td>
+              <td>{{.Object.Role.Description}}</td>
+              <td>
+                <div class="btn-groups">
+                  <a href="/{{$profiles.Url}}/{{$profiles.Put}}?id={{.Object.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{$profiles.Url}}/{{$profiles.Change}}?id={{.Object.ID}}" class="btn btn-success"><i class="fa fa-lock"></i></a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>

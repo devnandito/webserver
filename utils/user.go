@@ -13,6 +13,7 @@ import (
 type ValidateUser struct {
 	Email string
 	Password string
+	Password1 string
 	Username string
 	Name string
 	RoleID string
@@ -34,6 +35,7 @@ func GetUser(email string) (models.User) {
 		Email: res.Email,
 		Password: res.Password,
 		Username: res.Username,
+		RoleID: res.RoleID,
 	}
 	return data
 }
@@ -115,6 +117,56 @@ func (msg *ValidateUser) ValidateEdit() bool {
 
 	if strings.TrimSpace(msg.RoleID) == "" {
 		msg.Errors["RoleID"] = "Please enter a rol"
+	}
+
+	return len(msg.Errors) == 0
+
+}
+
+func (msg *ValidateUser) ValidatePwd() bool {
+	msg.Errors = make(map[string]string)
+
+	if strings.TrimSpace(msg.Password) == "" {
+		msg.Errors["Password"] = "Please enter a password"
+	}
+	
+	return len(msg.Errors) == 0
+
+}
+
+func (msg *ValidateUser) ValidatePwdProfile() bool {
+	msg.Errors = make(map[string]string)
+
+	if strings.TrimSpace(msg.Password) == "" {
+		msg.Errors["Password"] = "Please enter a password"
+	}
+
+	if strings.TrimSpace(msg.Password1) == "" {
+		msg.Errors["Password1"] = "Please enter a password"
+	}
+
+	if strings.TrimSpace(msg.Password1) != strings.TrimSpace(msg.Password) {
+		msg.Errors["Password"] = "Password not match"
+		msg.Errors["Password1"] = "Password not match"
+	}
+	
+	return len(msg.Errors) == 0
+
+}
+
+func (msg *ValidateUser) ValidateProfile() bool {
+	msg.Errors = make(map[string]string)
+
+	if strings.TrimSpace(msg.Username) == "" {
+		msg.Errors["Username"] = "Please enter a username"
+	}
+
+	if strings.TrimSpace(msg.Name) == "" {
+		msg.Errors["Name"] = "Please enter a name"
+	}
+
+	if strings.TrimSpace(msg.Email) == "" {
+		msg.Errors["Email"] = "Please enter a email"
 	}
 
 	return len(msg.Errors) == 0

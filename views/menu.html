@@ -5,6 +5,7 @@
 {{ $roles := index .Menu 3 }}
 {{ $users := index .Menu 4}}
 {{ $dashboard := index .Menu 5}}
+{{ $profile := index .Menu 6}}
 
 <aside class="main-sidebar">
   <section class="sidebar">
@@ -15,6 +16,7 @@
           <span>Home</span>
         </a>
       </li>
+      {{ if eq .RoleSession 1 }}
       <li class="treeview">
         <a href="">
           <i class="fa fa-list-ul"></i>
@@ -50,6 +52,7 @@
           </li>
         </ul>
       </li>
+      {{ end }}
       <li>
         <a href="">
           <i class="fa fa-th"></i>
@@ -93,6 +96,23 @@
             <a href="">
               <i class="fa fa-circle-o"></i>
               <span>Report sale</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="">
+          <i class="fa fa-list-ul"></i>
+          <span>Profile</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li>
+            <a href="/{{$profile.Url}}/{{$profile.Show}}?username={{.UserSession}}">
+              <i class="fa fa-circle-o"></i>
+              <span>Show</span>
             </a>
           </li>
         </ul>

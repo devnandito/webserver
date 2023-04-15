@@ -18,6 +18,7 @@ var metadata models.MetaData
 func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "List client"
 	m := utils.GetMenu()
 	headers := [7]string{"ID", "Firstname", "Lastname", "CI", "Birthday", "Sex", "Action"}
@@ -28,7 +29,6 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	show := filepath.Join("views/clients", "show.html")
 	response, err := cls.ShowClientGorm()
-
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)
@@ -41,6 +41,7 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 		"Objects": response,
 		"Headers": headers,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 
@@ -53,6 +54,7 @@ func HandleShowClient(w http.ResponseWriter, r *http.Request) {
 func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	m := utils.GetMenu()
 	title := "Add client"
 	header := filepath.Join("views", "header.html")
@@ -70,6 +72,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Menu": m,
 		})
 	
@@ -93,6 +96,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": msg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -126,6 +130,7 @@ func HandleCreateClient(w http.ResponseWriter, r *http.Request) {
 				"Msg": message,
 				"Link": linkmsg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -141,6 +146,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Edit client"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -179,6 +185,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Menu": m,
 		})
 	
@@ -210,7 +217,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 				"Title": title,
 				"Msg": msg,
 				"ID": id,
-				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -244,6 +251,7 @@ func HandleUpdateClient(w http.ResponseWriter, r *http.Request){
 				"Msg": message,
 				"Link": linkmsg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -259,6 +267,7 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Delete client"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -281,6 +290,7 @@ func HandleGetClient(w http.ResponseWriter, r *http.Request){
 		"Title": title,
 		"Object": response,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 

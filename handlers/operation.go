@@ -16,6 +16,8 @@ var op models.Operation
 func HandelShowOperation(w http.ResponseWriter, r *http.Request) {
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
+	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "List operations"
 	headers := [4]string{"ID", "Description", "Module", "Action"}
 	header := filepath.Join("views", "header.html")
@@ -25,8 +27,6 @@ func HandelShowOperation(w http.ResponseWriter, r *http.Request) {
 	footer := filepath.Join("views", "footer.html")
 	show := filepath.Join("views/operations", "show.html")
 	response, err := op.ShowOperationGorm()
-	userSession := session.Values["username"]
-	
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)
@@ -39,6 +39,7 @@ func HandelShowOperation(w http.ResponseWriter, r *http.Request) {
 		"Objects": response,
 		"Headers": headers,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 
@@ -51,6 +52,7 @@ func HandelShowOperation(w http.ResponseWriter, r *http.Request) {
 func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	m := utils.GetMenu()
 	title := "Add operation"
 	header := filepath.Join("views", "header.html")
@@ -74,6 +76,7 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Modules": modules,
 			"Menu": m,
 		})
@@ -94,6 +97,7 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 				"Title": title,
 				"Msg": msg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Modules": modules,
 				"Menu": m,
 			})
@@ -129,6 +133,7 @@ func HandleCreateOperation(w http.ResponseWriter, r *http.Request) {
 				"Msg": message,
 				"Link": linkmsg,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -144,6 +149,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Edit operation"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -183,6 +189,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 			"Msg": msg,
 			"ID": id,
 			"UserSession": userSession,
+			"RoleSession": roleSession,
 			"Modules": modules,
 			"FK": response.ModuleID,
 			"Menu": m,
@@ -217,6 +224,7 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 				"Msg": msg,
 				"ID": id,
 				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Modules": modules,
 				"FK": modid,
 				"Menu": m,
@@ -253,7 +261,8 @@ func HandleUpdateOperation(w http.ResponseWriter, r *http.Request){
 				"Title": title,
 				"Msg": message,
 				"Link": linkmsg,
-				"User": userSession,
+				"UserSession": userSession,
+				"RoleSession": roleSession,
 				"Menu": m,
 			})
 
@@ -269,6 +278,7 @@ func HandleGetOperation(w http.ResponseWriter, r *http.Request){
 	m := utils.GetMenu()
 	session := utils.GetSession(r)
 	userSession := session.Values["username"]
+	roleSession := session.Values["role"]
 	title := "Delete operation"
 	header := filepath.Join("views", "header.html")
 	nav := filepath.Join("views", "nav.html")
@@ -291,6 +301,7 @@ func HandleGetOperation(w http.ResponseWriter, r *http.Request){
 		"Title": title,
 		"Object": response,
 		"UserSession": userSession,
+		"RoleSession": roleSession,
 		"Menu": m,
 	})
 

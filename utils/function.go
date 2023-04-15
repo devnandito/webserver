@@ -16,6 +16,7 @@ type Menu struct {
 	Put string
 	Delete string
 	Detail string
+	Change string
 }
 
 func GetMenu() []Menu {
@@ -24,8 +25,9 @@ func GetMenu() []Menu {
 		{Url: "modules", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
 		{Url: "operations", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
 		{Url: "roles", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
-		{Url: "users", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "users", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail", Change: "change"},
 		{Url: "dashboard", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	},
+		{Url: "profiles", Show: "show", Create: "create",	Put: "put",	Delete: "delete",	Detail: "detail",	Change: "change"},
 	}
 	return m
 }

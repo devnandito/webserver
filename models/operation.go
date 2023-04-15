@@ -68,6 +68,15 @@ func (o Operation) ShowOperationGorm() ([]Operation, error) {
 	conn := lib.NewConfig()
 	db := conn.DsnStringGorm()
   var objects []Operation
-	response := db.Find(&objects)
+	response := db.Preload("Module").Find(&objects)
 	return objects, response.Error
 }
+
+// ShowOperationGormPreload
+// func (o Operation) ShowOperationGormPreload() ([]Operation, error) {
+// 	conn := lib.NewConfig()
+// 	db := conn.DsnStringGorm()
+// 	var objects []Operation
+// 	response := db.Preload("Module").Find(&objects)
+// 	return objects, response.Error
+// }
