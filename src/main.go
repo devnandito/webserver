@@ -39,6 +39,11 @@ func main() {
 	http.Handle("GET", "/register", handlers.SignUpUser)
 	http.Handle("POST", "/register", handlers.SignUpUser)
 
+
+	// Install
+	http.Handle("GET", "/install", handlers.HandleInstall)
+	http.Handle("POST", "/install", handlers.HandleInstall)
+	
 	// Users
 	http.Handle("GET", "/", handlers.SignInUser)
 	http.Handle("POST", "/login", handlers.SignInUser)

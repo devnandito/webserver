@@ -38,6 +38,12 @@ func BirthdayTime(timeStr string) (timeT time.Time) {
 	return t
 }
 
+func CheckError(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
 // type FormModule struct {
 // 	Value string
 // 	Option string

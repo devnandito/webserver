@@ -2,8 +2,10 @@ package lib
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,10 +22,12 @@ type Config struct {
 
 // GetEnv load env
 func GetEnv() (conf *Config) {
-	// err := godotenv.Load("lib/.env")
-	// if err != nil {
-	//  	log.Fatal("Error loading .env file")
-	// }
+	if _, err := os.Stat("lib/.env"); err == nil {
+		err := godotenv.Load("lib/.env")
+		if err != nil {
+		 	log.Fatal("Error loading .env file")
+		}
+  } 
 
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
