@@ -4,21 +4,21 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 
+	"github.com/devnandito/webserver/models"
 	"github.com/devnandito/webserver/utils"
 )
 
-func HandleInstall(w http.ResponseWriter, r *http.Request) {
-	title := "Install"
+func SignUpUser(w http.ResponseWriter, r *http.Request) {
+	title := "Register"
 	header := filepath.Join("views", "header.html")
 	footer := filepath.Join("views", "footer.html")
-	install := filepath.Join("views/install", "install.html")
+	signup := filepath.Join("views/users", "signup.html")
 	ms := filepath.Join("views/messages", "msg.html")
 	switch r.Method {
 	case "GET":
-		tmpl, _ := template.ParseFiles(install, header, footer)
+		tmpl, _ := template.ParseFiles(signup, header, footer)
 		res := tmpl.Execute(w, map[string]interface{}{
 			"Title": title,
 		})
@@ -28,15 +28,15 @@ func HandleInstall(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		msg := &utils.ValidateInstall{
-			UserDB: r.PostFormValue("dbuser"),
-			PwdDB: r.PostFormValue("dbpwd"),
-			NameDB: r.PostFormValue("dbname"),
-			HostDB: r.PostFormValue("dbhost"),
+		msg := &utils.ValidateUser{
+			Email: r.PostFormValue("email"),
+			Password: r.PostFormValue("password"),
+			Username: r.PostFormValue("username"),
+			Name: r.PostFormValue("name"),
 		}
 		
-		if !msg.Validate() {
-			tmpl, _ := template.ParseFiles(install, header, footer)
+		if !msg.ValidateRegister() {
+			tmpl, _ := template.ParseFiles(signup, header, footer)
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": msg,
@@ -48,16 +48,27 @@ func HandleInstall(w http.ResponseWriter, r *http.Request) {
 			}
 
 		} else {
-			// utils.Chdir("/home/tech")
-			// utils.Execute("ls", "-l")
-			data := "DB_USER="+msg.UserDB+"\nDB_PWD="+msg.PwdDB+"\nDB_NAME="+msg.NameDB+"\nDB_HOST="+msg.HostDB+"\nDB_PORT=5432"
-			env := []byte(data)
-			err := os.WriteFile("lib/.env", env, 0644)
-			utils.CheckError(err)
+			pwd, _ := usr.GetPwdHash(msg.Password)
+			data := models.User {
+				Email: msg.Email,
+				Username: msg.Username,
+				Name: msg.Name,
+				RoleID: 1,
+				Password: pwd,
+			}
 
-			message := "Sistema instalado"
+			response, err := usr.CreateUserGorm(&data)
+
+			if err != nil {
+				log.Println(err)
+				http.Error(w, http.StatusText(500), 500)
+				return
+			}
+
+			log.Println("Data inserted", response)
+			message := "Usuario registrado"
 			tmpl, _ := template.ParseFiles(ms, header, footer)
-			linkmsg := "/register"
+			linkmsg := "/"
 			res := tmpl.Execute(w, map[string]interface{}{
 				"Title": title,
 				"Msg": message,

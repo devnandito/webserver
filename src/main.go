@@ -43,6 +43,8 @@ func main() {
 	// Install
 	http.Handle("GET", "/install", handlers.HandleInstall)
 	http.Handle("POST", "/install", handlers.HandleInstall)
+	http.Handle("GET", "/seed", handlers.HandleSeedData)
+	http.Handle("POST", "/seed", handlers.HandleSeedData)
 	
 	// Users
 	http.Handle("GET", "/", handlers.SignInUser)

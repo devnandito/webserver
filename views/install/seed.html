@@ -11,39 +11,32 @@
     />
   </div>
   <div class="login-box-body">
-    <form action="/install" method="post">
+    <form action="/seed" method="post">
       <div class="form-group has-feedback">
-        <input type="text" name="dbuser" class="form-control" value="{{.Msg.UserDB}}" placeholder="Database user">
+        <input type="text" name="module" class="form-control" value="{{.Msg.ModuleDes}}" placeholder="Module description">
         <span class="glyphicon glyphicon-file form-control-feedback"></span>
       </div>
-      {{ with .Msg.Errors.UserDB }}
+      {{ with .Msg.Errors.ModuleDes }}
         <strong class="text-danger">{{ . }}</strong>
       {{ end }}
       <div class="form-group has-feedback">
-        <input type="password" name="dbpwd" class="form-control" value="{{.Msg.PwdDB}}" placeholder="Database password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        <input type="text" name="operation" class="form-control" value="{{.Msg.OperationDes}}" placeholder="Operation description">
+        <span class="glyphicon glyphicon-file form-control-feedback"></span>
       </div>
-      {{ with .Msg.Errors.PwdDB }}
+      {{ with .Msg.Errors.OperationDes }}
         <strong class="text-danger">{{ . }}</strong>
       {{ end }}
       <div class="form-group has-feedback">
-        <input type="text" name="dbname" class="form-control" value="{{.Msg.NameDB}}" placeholder="Database name">
+        <input type="text" name="role" class="form-control" value="{{.Msg.RoleDes}}" placeholder="Role description">
         <span class="glyphicon glyphicon-file form-control-feedback"></span>
       </div>
-      {{ with .Msg.Errors.NameDB }}
-        <strong class="text-danger">{{ . }}</strong>
-      {{ end }}
-      <div class="form-group has-feedback">
-        <input type="text" name="dbhost" class="form-control" value="{{.Msg.HostDB}}" placeholder="Database Host">
-        <span class="glyphicon glyphicon-file form-control-feedback"></span>
-      </div>
-      {{ with .Msg.Errors.HostDB }}
+      {{ with .Msg.Errors.RoleDes }}
         <strong class="text-danger">{{ . }}</strong>
       {{ end }}
       <div class="row">
         <div class="col-xs-4">
           <button type="submit" class="btn btn-primary btn-block btn-flat">
-            Install
+            Seed
           </button>
         </div>
       </div>

@@ -14,7 +14,6 @@ type ValidateInstall struct {
 	Errors map[string]string
 }
 
-
 func (msg *ValidateInstall) Validate() bool {
 	msg.Errors = make(map[string]string)
 
