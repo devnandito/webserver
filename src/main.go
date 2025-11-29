@@ -101,5 +101,24 @@ func main() {
 	http.Handle("POST", "/clients/put", http.AddMiddleware(handlers.HandleUpdateClient, middleware.CheckAuth()))
 	http.Handle("GET", "/clients/detail", http.AddMiddleware(handlers.HandleGetClient, middleware.CheckAuth()))
 	http.Handle("GET", "/clients/delete", http.AddMiddleware(handlers.HandleDeleteClient, middleware.CheckAuth()))
+
+	// Products
+	http.Handle("GET", "/products/show", http.AddMiddleware(handlers.HandleShowProduct, middleware.CheckAuth()))
+	http.Handle("GET", "/products/create", http.AddMiddleware(handlers.HandleCreateProduct, middleware.CheckAuth()))
+	http.Handle("POST", "/products/create", http.AddMiddleware(handlers.HandleCreateProduct, middleware.CheckAuth()))
+	http.Handle("GET", "/products/put", http.AddMiddleware(handlers.HandleUpdateProduct, middleware.CheckAuth()))
+	http.Handle("POST", "/products/put", http.AddMiddleware(handlers.HandleUpdateProduct, middleware.CheckAuth()))
+	http.Handle("GET", "/products/detail", http.AddMiddleware(handlers.HandleGetProduct, middleware.CheckAuth()))
+	http.Handle("GET", "/products/delete", http.AddMiddleware(handlers.HandleDeleteProduct, middleware.CheckAuth()))
+
+	// Contributions
+	http.Handle("GET", "/contributions/show", http.AddMiddleware(handlers.HandleShowContribution, middleware.CheckAuth()))
+	http.Handle("GET", "/contributions/create", http.AddMiddleware(handlers.HandleCreateContribution, middleware.CheckAuth()))
+	http.Handle("POST", "/contributions/create", http.AddMiddleware(handlers.HandleCreateContribution, middleware.CheckAuth()))
+	http.Handle("GET", "/contributions/put", http.AddMiddleware(handlers.HandleUpdateContribution, middleware.CheckAuth()))
+	http.Handle("POST", "/contributions/put", http.AddMiddleware(handlers.HandleUpdateContribution, middleware.CheckAuth()))
+	http.Handle("GET", "/contributions/detail", http.AddMiddleware(handlers.HandleGetContribution, middleware.CheckAuth()))
+	http.Handle("GET", "/contributions/delete", http.AddMiddleware(handlers.HandleDeleteContribution, middleware.CheckAuth()))
+
 	http.Listen()
 }

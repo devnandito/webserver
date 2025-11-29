@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $uri := index .Menu 0 }}
+{{ $uri := index .Menu 7 }}
 
 <div class="content-wrapper">
   <section class="content-header">
@@ -10,7 +10,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show {{$uri.Plural}} </a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show {{$uri.Plural}}</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -45,45 +45,58 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="document" value="{{.Msg.Ci}}" placeholder="CI">
+                <input class="form-control" type="text" name="amount" value="{{.Msg.Amount}}" placeholder="Amount">
               </div>
-              {{ with .Msg.Errors.Ci }}
+              {{ with .Msg.Errors.Amount }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="firstname" value="{{.Msg.Firstname}}" placeholder="Firstname">
+                <input class="form-control" type="text" name="contribution_date" value="{{.Msg.Contribution_date}}" placeholder="2006-01-02 15:00:00">
               </div>
-              {{ with .Msg.Errors.Firstname }}
+              {{ with .Msg.Errors.Contribution_date }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="lastname" value="{{.Msg.Lastname}}" placeholder="Lastname">
+                <input class="form-control" type="text" name="method_pay" value="{{.Msg.Method_pay}}" placeholder="Method pay">
               </div>
-              {{ with .Msg.Errors.Lastname }}
+              {{ with .Msg.Errors.Method_pay }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="sex" value="{{.Msg.Sex}}" placeholder="Sex">
+                <input class="form-control" type="text" name="description" value="{{.Msg.Description}}" placeholder="Description">
               </div>
-              {{ with .Msg.Errors.Sex }}
+              {{ with .Msg.Errors.Description }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>
             <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="birthday" value="{{.Msg.Birthday}}" placeholder="1900-01-01 21:01:01">
-              </div>
-              {{ with .Msg.Errors.Birthday }}
+              <select class="form-control" name="clientid">
+                <option value="" selected>Open this select menu</option>
+                {{ range .Clients}}
+                <option value="{{.ID}}">{{.FirstName}} {{.LastName}} </option>
+                {{ end}}
+              </select>
+              {{ with .Msg.Errors.ClientID }}
+                <strong class="text-danger">{{ . }}</strong>
+              {{ end }}
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="productid">
+                <option value="" selected>Open this select menu</option>
+                {{ range .Products}}
+                <option value="{{.ID}}">{{.Description}} </option>
+                {{ end}}
+              </select>
+              {{ with .Msg.Errors.ProductID }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>

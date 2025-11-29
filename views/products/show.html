@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $roles := index .Menu 3 }}
+{{ $products := index .Menu 8 }}
 {{ $dashboard := index .Menu 5}}
 
 <div class="content-wrapper">
@@ -11,13 +11,13 @@
       <li>
         <a href="/{{$dashboard.Url}}"><i class="fa fa-dashboard"></i> Dashboard</a>
       </li>
-      <li class="active">Show {{$roles.Plural}}</li>
+      <li class="active">Show {{$products.Plural}}</li>
     </ol>
   </section>
   <section class="content">
     <div class="box">
       <div class="box-header with-border">
-        <a href="/{{$roles.Url}}/{{$roles.Create}}" class="btn btn-primary"> Add {{$roles.Singular}} </a>
+        <a href="/{{$products.Url}}/{{$products.Create}}" class="btn btn-primary"> Add {{$products.Singular}} </a>
         <div class="box-tools pull-right">
           <button
             type="button"
@@ -55,8 +55,8 @@
               <td>{{.Description}}</td>
               <td>
                 <div class="btn-groups">
-                  <a href="/{{$roles.Url}}/{{$roles.Put}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                  <a href="/{{$roles.Url}}/{{$roles.Detail}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                  <a href="/{{$products.Url}}/{{$products.Put}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{$products.Url}}/{{$products.Detail}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
                 </div>
               </td>
             </tr>

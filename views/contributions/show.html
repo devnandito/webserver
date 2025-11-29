@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "nav" . }}
 {{ template "menu" . }}
-{{ $clients := index .Menu 0 }}
+{{ $contributions := index .Menu 7 }}
 {{ $dashboard := index .Menu 5}}
 
 <div class="content-wrapper">
@@ -11,13 +11,13 @@
       <li>
         <a href="/{{$dashboard.Url}}"><i class="fa fa-dashboard"></i> Dahboard</a>
       </li>
-      <li class="active">Show {{$clients.Plural}}</li>
+      <li class="active">Show {{$contributions.Plural}}</li>
     </ol>
   </section>
   <section class="content">
     <div class="box">
       <div class="box-header with-border">
-        <a href="/{{$clients.Url}}/{{$clients.Create}}" class="btn btn-primary"> Add {{$clients.Singular}} </a>
+        <a href="/{{$contributions.Url}}/{{$contributions.Create}}" class="btn btn-primary"> Add {{$contributions.Singular}} </a>
         <div class="box-tools pull-right">
           <button
             type="button"
@@ -52,15 +52,16 @@
             {{ range .Objects}}
             <tr>
               <td>{{.ID}}</td>
-              <td>{{.FirstName}}</td>
-              <td>{{.LastName}}</td>
-              <td>{{.Ci}}</td>
-              <td>{{.BirthdayDateStrShort}}</td>
-              <td>{{.Sex}}</td>
+              <td>{{.Amount}}</td>
+              <td>{{.Contribution_date}}</td>
+              <td>{{.Method_pay}}</td>
+              <td>{{.Product.Description}}</td>
+              <td>{{.Description}}</td>
+              <td>{{.Client.FirstName}} {{.Client.LastName}}</td>
               <td>
                 <div class="btn-groups">
-                  <a href="/{{$clients.Url}}/{{$clients.Put}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                  <a href="/{{$clients.Url}}/{{$clients.Detail}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
+                  <a href="/{{$contributions.Url}}/{{$contributions.Put}}?id={{.ID}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                  <a href="/{{$contributions.Url}}/{{$contributions.Detail}}?id={{.ID}}" class="btn btn-danger"><i class="fa fa-times"></i></a>
                 </div>
               </td>
             </tr>

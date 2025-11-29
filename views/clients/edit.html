@@ -11,7 +11,7 @@
     </h1>
     <ol class="breadcrumb">
       <li>
-        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show clients</a>
+        <a href="/{{$uri.Url}}/{{$uri.Show}}"><i class="fa fa-dashboard"></i> Show {{$uri.Plural}}</a>
       </li>
       <li class="active">{{.Title}}</li>
     </ol>
@@ -89,9 +89,9 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-                <input class="form-control" type="text" name="birthday" value="{{.Msg.BirthdayDateStr}}">
+                <input class="form-control" type="text" name="birthday" value="{{.Msg.Birthday}}">
               </div>
-              {{ with .Msg.Errors.BirthdayDateStr }}
+              {{ with .Msg.Errors.Birthday }}
                 <strong class="text-danger">{{ . }}</strong>
               {{ end }}
             </div>

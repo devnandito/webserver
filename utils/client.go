@@ -27,7 +27,6 @@ func (msg ValidateClient) BirthdayTime(timeStr string) (timeT time.Time) {
 	return t
 }
 
-
 func (msg *ValidateClient) Validate() bool {
 	msg.Errors = make(map[string]string)
 
@@ -47,9 +46,9 @@ func (msg *ValidateClient) Validate() bool {
 		msg.Errors["Sex"] = "Please enter a sex"
 	}
 
-	if strings.TrimSpace(msg.BirthdayDateStr()) == "" {
-		msg.Errors["Birthday"] = "Please enter a birthay"
-	}
+	// if msg.Birthday.IsZero() {
+	// 	msg.Errors["Birthday"] = "Please enter a birthay"
+	// }
 
 	return len(msg.Errors) == 0
 

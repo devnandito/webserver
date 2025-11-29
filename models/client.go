@@ -36,6 +36,7 @@ func (c Client) BirthdayDateStr() string {
 func (c Client) BirthdayDateStrShort() string {
 	return c.Birthday.Format("02-01-2006")
 }
+
 // BirthdayTime convert string to time
 func (c Client) BirthdayTime(timeStr string) (timeT time.Time) {
 	const Format = "2006-01-02T15:04:05"
